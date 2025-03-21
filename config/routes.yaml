@@ -1,0 +1,7 @@
+controllers:
+    resource: ../src/Controller/
+    type: attribute
+
+user_home:
+    path: /
+    controller: App\Controller\UserController::home

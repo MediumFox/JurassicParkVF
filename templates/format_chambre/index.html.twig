@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les formats de chambre{% endblock %}
+
+{% block body %}
+    {% include 'reuse/hero.html.twig' %}
+    <div class="flex justify-around p-5 gap-10">
+        <div class="w-[30%]">
+            {% include 'reuse/dashboard-admin.html.twig' %}
+        </div>
+        <div class="w-[70%] mx-auto p-2">
+            <div class="w-[100%] flex justify-end">
+                <a href="{{ path('app_format_chambre_new') }}" class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm">Créer un format de chambre</a>
+            </div> 
+            <h1 class="font-bold text-2xl mb-3.5 underline">Les formats de chambre</h1>
+            <div class="grid-cols-4 grid-rows-4 grid gap-7">
+                {% if format_chambres is not empty %}
+                    {% for format_chambre in format_chambres|slice(0, 16)  %}
+                        <div class="overflow-hidden bg-white border-[1px] border-gray-300 rounded-lg">
+                            <div class="px-3 pb-3 pt-2 relative">
+                                <div class="flex justify-between">
+                                    <div class="flex flex-row items-center">
+                                        <span class="font-bold text-center">{{ format_chambre.libelleFormat }}</span>
+                                    </div>
+                                    <span>{{ format_chambre.prixFormat }}€</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span>{{format_chambre.descriptionFormat}}</span>
+                                </div>
+        
+                                <div class="flex justify-end gap-2 mt-2">
+                                    {{ include('format_chambre/_delete.html.twig') }}
+                                    <a href="{{ path('app_format_chambre_edit', {'id': format_chambre.id}) }}" class="rounded bg-slate-900 p-1 hover:cursor-pointer">
+    
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <span>Aucun format de chambre trouvé</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

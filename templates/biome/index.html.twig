@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les biomes{% endblock %}
+
+{% block body %}
+    {% include 'reuse/hero.html.twig' %}
+    <div class="flex justify-around p-5 gap-10">
+        <div class="w-[30%]">
+            {% include 'reuse/dashboard-admin.html.twig' %}
+        </div>
+        <div class="w-[70%] mx-auto p-2">
+            <div class="w-[100%] flex justify-end" onClick="ajouterData()">
+                <span class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm cursor-pointer">Créer un biome</span>
+                {# <a href="{{ path('app_biome_new') }}" class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm">Créer un biome</a> #}
+            </div> 
+            <h1 class="font-bold text-2xl mb-3.5 underline">Les biomes</h1>
+            <div class="grid-cols-4 grid-rows-4 grid gap-7 overflow-hidden">
+                {% if biomes is not empty %}
+                    {% for biome in biomes|slice(0, 16) %}
+                        <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg">
+                            <div class="px-3 pb-3 pt-2 relative">
+                                <div class="flex justify-between">
+                                    <div class="flex flex-row items-center">
+                                        <span class="font-bold text-center">{{ biome.libelleBiome }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col">
+                                    <span>{{biome.descriptionBiome}}</span>
+                                </div>
+
+                                <div class="flex justify-end gap-2 mt-2">
+                                    {{ include('biome/_delete.html.twig') }}
+                                    <a href="{{ path('app_biome_edit', {'id': biome.id}) }}" class="rounded bg-slate-900 p-1 hover:cursor-pointer">
+    
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <span>Aucun biome trouvé</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}

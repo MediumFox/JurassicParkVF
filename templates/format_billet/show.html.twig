@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FormatBillet{% endblock %}
+
+{% block body %}
+    <h1>FormatBillet</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ format_billet.id }}</td>
+            </tr>
+            <tr>
+                <th>LibelleBillet</th>
+                <td>{{ format_billet.libelleBillet }}</td>
+            </tr>
+            <tr>
+                <th>ImageBillet</th>
+                <td>{{ format_billet.imageBillet }}</td>
+            </tr>
+            <tr>
+                <th>DescriptionBillet</th>
+                <td>{{ format_billet.descriptionBillet }}</td>
+            </tr>
+            <tr>
+                <th>PrixBillet</th>
+                <td>{{ format_billet.prixBillet }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_format_billet_index') }}">back to list</a>
+
+    <a href="{{ path('app_format_billet_edit', {'id': format_billet.id}) }}">edit</a>
+
+    {{ include('format_billet/_delete_form.html.twig') }}
+{% endblock %}

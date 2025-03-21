@@ -1,0 +1,9 @@
+services:
+    App\Twig\AppExtension:
+        arguments:
+            $security: '@security.helper'
+        tags:
+            - { name: twig.extension }
+    App\EventListener\LoginSuccessListener:
+        tags:
+            - { name: kernel.event_listener, event: security.authentication.success, method: onLoginSuccess }

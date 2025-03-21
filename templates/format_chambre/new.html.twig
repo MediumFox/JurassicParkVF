@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New FormatChambre{% endblock %}
+
+{% block body %}
+    <h1>Create new FormatChambre</h1>
+
+    {{ include('format_chambre/_form.html.twig') }}
+
+    <a href="{{ path('app_format_chambre_index') }}">back to list</a>
+{% endblock %}

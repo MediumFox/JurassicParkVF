@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Biome{% endblock %}
+
+{% block body %}
+
+    <h1>Biome</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ biome.id }}</td>
+            </tr>
+            <tr>
+                <th>LibelleBiome</th>
+                <td>{{ biome.libelleBiome }}</td>
+            </tr>
+            <tr>
+                <th>DescriptionBiome</th>
+                <td>{{ biome.descriptionBiome }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_biome_index') }}">back to list</a>
+
+    <a href="{{ path('app_biome_edit', {'id': biome.id}) }}">edit</a>
+
+    {{ include('biome/_delete_form.html.twig') }}
+{% endblock %}

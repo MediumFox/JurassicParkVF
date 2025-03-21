@@ -1,0 +1,32 @@
+<div class="fixed inset-0 flex justify-center items-center bg-black/30 hidden z-50" id="addDisplay" onClick="fermerData()">
+    <div class="w-[40%] bg-gray-100 p-5 rounded-lg shadow-lg z-60" onClick="event.stopPropagation()">
+        <h2 class="text-xl font-bold mb-4">Ajouter un nouveau biome</h2>
+        <div id="formContainer">
+            {% include 'reuse/display/addDisplay.html.twig' %}
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ajouterData() {
+        const modal = document.getElementById('addDisplay');
+        const formContainer = document.getElementById('formContainer');
+
+        modal.style.display = "flex";
+        if (!formContainer.innerHTML.includes('<form')) {
+            fetch("{{ path('app_biome_form') }}")
+                .then(response => response.text())
+                .then(html => {
+                    formContainer.innerHTML = html;
+                })
+                .catch(error => {
+                    formContainer.innerHTML = "<span class='text-red-500'>Erreur lors du chargement du formulaire.</span>";
+                });
+        }
+    }
+
+    function fermerData() {
+        document.getElementById('addDisplay').style.display = "none";
+    }
+</script>

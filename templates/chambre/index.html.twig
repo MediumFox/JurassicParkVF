@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les chambres{% endblock %}
+
+{% block body %}
+    {% include 'reuse/hero.html.twig' %}
+    <div class="flex justify-around p-5 gap-10">
+        <div class="w-[30%]">
+            {% include 'reuse/dashboard-admin.html.twig' %}
+        </div>
+        <div class="w-[70%] mx-auto p-2">
+            <div class="w-[100%] flex justify-end">
+                <a href="{{ path('app_chambre_new') }}" class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm">Créer une chambre</a>
+            </div> 
+            <h1 class="font-bold text-2xl mb-3.5 underline">Les chambres</h1>
+            <div class="grid-cols-4 grid-rows-4 grid gap-7 overflow-hidden">
+                {% if chambres is not empty %}
+                    {% for chambre in chambres|slice(0, 16) %}
+                        <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg">
+                            <div class="px-3 pb-3 pt-2 relative">
+                                <div class="flex justify-between">
+                                    <span class="font-bold text-center">{{ chambre.numeroChambre }}</span>
+                                    <span><strong>Etage :</strong> {{chambre.etageChambre}}</span>
+                                </div>
+
+                                <div class="flex flex-row justify-between items-end">
+                                    <div class="mb-1">
+                                        <span class="text-xs bg-slate-900 rounded p-1 font-bold text-white">
+                                            {{ chambre.hotel is not null ? chambre.hotel.libelleHotel : "Pas d'hôtel défini" }}
+                                        </span>
+                                    </div>
+                                    <div class="flex justify-end gap-2 mt-2">
+                                        {{ include('chambre/_delete.html.twig') }}
+
+                                        <a href="{{ path('app_chambre_edit', {'id': chambre.id}) }}" class="rounded bg-slate-900 p-1 hover:cursor-pointer">
+        
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <span>Aucune chambre trouvé</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
