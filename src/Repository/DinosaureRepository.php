@@ -16,28 +16,52 @@ class DinosaureRepository extends ServiceEntityRepository
         parent::__construct($registry, Dinosaure::class);
     }
 
-    //    /**
-    //     * @return Dinosaure[] Returns an array of Dinosaure objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+       /**
+        * @return Dinosaure[] Returns an array of Dinosaure objects
+        */
+        public function filterName(?string $libelle, ?string $regime, ?string $ere): array
+        {
+            $qb = $this->createQueryBuilder('d');
+        
+            if ($libelle) {
+                $qb->andWhere('d.libelleDinosaure LIKE :val1')
+                   ->setParameter('val1', '%' . $libelle . '%');
+            }
 
-    //    public function findOneBySomeField($value): ?Dinosaure
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+            if ($ere) {
+                $qb->andWhere('d.ereDinosaure  = :val3')
+                ->setParameter('val3', $ere);
+            }
+        
+            if ($regime) {
+                $qb->andWhere('d.regimeDinosaure = :val2')
+                   ->setParameter('val2', $regime);
+            }
+        
+            return $qb->orderBy('d.libelleDinosaure', 'ASC')
+                      ->getQuery()
+                      ->getResult();
+        }
+
+        public function findNextId(int $currentId): ?Dinosaure
+        {
+            return $this->createQueryBuilder('d')
+                ->andWhere('d.id > :currentId')
+                ->setParameter('currentId', $currentId)
+                ->orderBy('d.id', 'ASC')
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+        }
+
+        public function findPreviousId(int $currentId): ?Dinosaure
+        {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.id < :currentId')
+            ->setParameter('currentId', $currentId)
+            ->orderBy('d.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+        }
 }

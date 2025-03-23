@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/chambre')]
@@ -19,11 +20,16 @@ final class ChambreController extends AbstractController
     {
         return $this->render('chambre/index.html.twig', [
             'chambres' => $chambreRepository->findAll(),
+            'hero'=> [
+                'title'=> "L'index des chambres",
+                'description' => "Lorem Ipsum.",
+                'enabled' => false,
+            ]
         ]);
     }
 
-    #[Route('/new', name: 'app_chambre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/new', name: 'app_chambre_new', methods: ['GET', 'POST'])]    
+    public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $chambre = new Chambre();
         $form = $this->createForm(ChambreType::class, $chambre);
@@ -33,24 +39,13 @@ final class ChambreController extends AbstractController
             $entityManager->persist($chambre);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
 
-        return $this->render('chambre/new.html.twig', [
-            'chambre' => $chambre,
-            'form' => $form,
-        ]);
+        return new JsonResponse(['success' => false, 'errors' => (string) $form->getErrors(true, false)]);
     }
 
-    #[Route('/{id}', name: 'app_chambre_show', methods: ['GET'])]
-    public function show(Chambre $chambre): Response
-    {
-        return $this->render('chambre/show.html.twig', [
-            'chambre' => $chambre,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_chambre_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_chambre_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Chambre $chambre, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ChambreType::class, $chambre);
@@ -59,12 +54,27 @@ final class ChambreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
+    
+        return new JsonResponse([
+            'success' => false,
+            'errors' => (string) $form->getErrors(true, false)
+        ]);
+    }
 
-        return $this->render('chambre/edit.html.twig', [
-            'chambre' => $chambre,
-            'form' => $form,
+    #[Route('/new-form', name: 'app_chambre_form', methods: ['GET'])]
+    public function getForm(Request $request, ChambreRepository $chambreRepository): Response
+    {
+        $id = $request->query->get('id');
+        $chambre = $id ? $chambreRepository->find($id) : new Chambre();
+        $form = $this->createForm(ChambreType::class, $chambre);
+    
+        return $this->render('reuse/_form.html.twig', [
+            'form' => $form->createView(),
+            'id' => $id,
+            'type' => $chambre->getNumeroChambre() ? 'Mettre à jour' : 'Créer',
+            'entity' => 'chambre',
         ]);
     }
 

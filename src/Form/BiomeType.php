@@ -20,7 +20,8 @@ class BiomeType extends AbstractType
                 'attr'=>[
                     'placeholder' => 'Exemple : Toundra',
                     'maxlength' => 50,
-                    'minlenght' => 3
+                    'minlenght' => 3,
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -38,6 +39,7 @@ class BiomeType extends AbstractType
                     'placeholder'=> '...',
                     'minlenght'=> 25,
                     'maxlength' => 1000,
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),

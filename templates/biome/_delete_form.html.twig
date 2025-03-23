@@ -1,6 +1,6 @@
 <form method="post" action="{{ path('app_biome_delete', {'id': biome.id}) }}" onsubmit="return confirm('Veux-tu supprimer ce biome ?');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ biome.id) }}">
-    <button class="btn">
-        {% include 'svg/delete.html.twig' %}
+    <button class="rounded bg-bleuLune h-[25px] w-[25px] cursor-pointer flex items-center justify-center">
+        {% include 'svg/delete-svg.html.twig' %}
     </button>
 </form>

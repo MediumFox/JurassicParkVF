@@ -61,10 +61,14 @@ class ClientRegistrationController extends AbstractController
     public function verifyOtp(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
         if ($request->isMethod('POST')) {
-            $enteredOtp = $request->request->get('otp');
+            $enteredOtp = '';
+            for ($i = 1; $i <= 6; $i++) {
+                $enteredOtp .= $request->request->get('v' . $i);
+            }
 
             if ($client->getOtp() === $enteredOtp) {
                 $client->setOtp(null); 
+                $client->setIsVerified(true);
                 $entityManager->flush();
 
                 return $this->redirectToRoute('app_login');

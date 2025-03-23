@@ -9,8 +9,8 @@
             {% include 'reuse/dashboard-admin.html.twig' %}
         </div>
         <div class="w-[70%] mx-auto p-2">
-            <div class="w-[100%] flex justify-end">
-                <a href="{{ path('app_restaurant_new') }}" class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm">Créer un restaurant</a>
+            <div class="w-[100%] flex justify-end" onClick="ajouterData()">
+                <span class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm cursor-pointer">Créer un restaurant</span>
             </div> 
             <h1 class="font-bold text-2xl mb-3.5 underline">Les restaurants</h1>
             <div class="grid-cols-4 grid-rows-4 grid gap-7">
@@ -31,9 +31,9 @@
                                 <span>Description</span>
                                  <div class="flex justify-end gap-2 mt-2">
                                     {{ include('restaurant/_delete.html.twig') }}
-                                    <a href="{{ path('app_restaurant_edit', {'id': restaurant.id}) }}" class="rounded bg-slate-900 p-1 hover:cursor-pointer">
-    
-                                    </a>
+                                    <span onClick="mettreAJourData({{restaurant.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                                        {{ include('svg/update-svg.html.twig') }}
+                                    <span/>
                                 </div>
                             </div>
                         </div>

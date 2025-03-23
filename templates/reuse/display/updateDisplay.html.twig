@@ -1,0 +1,30 @@
+<div class="fixed inset-0 flex justify-center items-center bg-black/30 hidden z-50" id="updateDisplay" onClick="fermerUpdateData()">
+    <div class="w-[40%] bg-gray-100 p-5 rounded-lg shadow-lg z-60" onClick="event.stopPropagation()">
+        <h2 class="text-xl font-bold mb-4">Mettre à jour un nouveau biome</h2>
+        <div id="updateContainer">
+            <p class="text-gray-400 text-sm">Chargement du formulaire...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function mettreAJourData(id) {
+    const modal = document.getElementById('updateDisplay');
+    const formContainer = document.getElementById('updateContainer');
+
+    modal.style.display = "flex";
+    const url = "{{ path('app_biome_form') }}" + "?id=" + encodeURIComponent(id);
+    fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            formContainer.innerHTML = html;
+        })
+        .catch(error => {
+            formContainer.innerHTML = "<span class='text-red-500'>Erreur lors du chargement.</span>";
+        });
+}
+
+function fermerUpdateData() {
+    document.getElementById('updateDisplay').style.display = "none";
+}
+</script>

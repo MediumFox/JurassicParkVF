@@ -1,0 +1,41 @@
+
+{% set route = 'app_' ~ entity ~ '_' ~ (type == 'Mettre à jour' ? 'edit' : 'new') %}
+
+<form id="form" action="{{ path(route, id is defined ? {'id': id} : {}) }}" method="post" data-turbo="false">
+    <div id="form-errors" class="text-red-500 text-sm mb-2"></div>
+
+    {{ form_widget(form) }}
+
+    <button type="submit" class="bg-bleuLune text-white px-4 py-2 rounded w-full mt-4">
+        {{ type }}
+    </button>
+</form>
+
+<script>
+document.getElementById("form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const form = e.target;
+    const data = new FormData(form);
+    const errors = document.getElementById("form-errors");
+
+    fetch(form.action, {
+        method: "POST",
+        body: data,
+        headers: {
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            errors.innerHTML = data.errors || "Erreur de validation.";
+        }
+    })
+    .catch(() => {
+        errors.innerHTML = "Erreur technique.";
+    });
+});
+</script>

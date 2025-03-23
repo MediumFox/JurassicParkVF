@@ -4,12 +4,13 @@ namespace App\Controller;
 
 use App\Entity\FormatChambre;
 use App\Form\FormatChambreType;
-use App\Repository\FormatChambreRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\FormatChambreRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/format/chambre')]
 final class FormatChambreController extends AbstractController
@@ -19,38 +20,47 @@ final class FormatChambreController extends AbstractController
     {
         return $this->render('format_chambre/index.html.twig', [
             'format_chambres' => $formatChambreRepository->findAll(),
+            'hero'=> [
+                'title'=> "L'index des formats de chambre",
+                'description' => "Lorem Ipsum.",
+                'enabled' => false,
+            ]
         ]);
     }
 
     #[Route('/new', name: 'app_format_chambre_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
-        $formatChambre = new FormatChambre();
-        $form = $this->createForm(FormatChambreType::class, $formatChambre);
+        $chambre = new FormatChambre();
+        $form = $this->createForm(FormatChambreType::class, $chambre);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($formatChambre);
+            $entityManager->persist($chambre);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_format_chambre_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
 
-        return $this->render('format_chambre/new.html.twig', [
-            'format_chambre' => $formatChambre,
-            'form' => $form,
-        ]);
+        return new JsonResponse(['success' => false, 'errors' => (string) $form->getErrors(true, false)]);
     }
 
-    #[Route('/{id}', name: 'app_format_chambre_show', methods: ['GET'])]
-    public function show(FormatChambre $formatChambre): Response
+    #[Route('/new-form', name: 'app_format_chambre_form', methods: ['GET'])]
+    public function getForm(Request $request, FormatChambreRepository $formatRepository): Response
     {
-        return $this->render('format_chambre/show.html.twig', [
-            'format_chambre' => $formatChambre,
+        $id = $request->query->get('id');
+        $format = $id ? $formatRepository->find($id) : new FormatChambre();
+        $form = $this->createForm(FormatChambreType::class, $format);
+    
+        return $this->render('reuse/_form.html.twig', [
+            'form' => $form->createView(),
+            'id' => $id,
+            'type' => $format->getLibelleFormatChambre() ? 'Mettre à jour' : 'Créer',
+            'entity' => 'format_chambre',
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_format_chambre_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_format_chambre_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, FormatChambre $formatChambre, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(FormatChambreType::class, $formatChambre);
@@ -59,12 +69,12 @@ final class FormatChambreController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_format_chambre_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
-
-        return $this->render('format_chambre/edit.html.twig', [
-            'format_chambre' => $formatChambre,
-            'form' => $form,
+    
+        return new JsonResponse([
+            'success' => false,
+            'errors' => (string) $form->getErrors(true, false)
         ]);
     }
 

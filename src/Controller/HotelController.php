@@ -9,48 +9,73 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Utils\traitUploadImg;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/admin/hotel')]
 final class HotelController extends AbstractController
 {
+    use traitUploadImg;
+    
     #[Route(name: 'app_hotel_index', methods: ['GET'])]
     public function index(HotelRepository $hotelRepository): Response
     {
         return $this->render('hotel/index.html.twig', [
             'hotels' => $hotelRepository->findAll(),
+            'hero'=> [
+                'title'=> "L'index des hôtels",
+                'description' => "Lorem Ipsum.",
+                'enabled' => false,
+            ]
         ]);
     }
 
     #[Route('/new', name: 'app_hotel_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): JsonResponse
     {
         $hotel = new Hotel();
         $form = $this->createForm(HotelType::class, $hotel);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->get('imageHotel')->getData(); 
+            if ($imageFile) {
+                $imagePath = $this->uploadImg($imageFile, 'Hotels', $slugger);
+    
+                if ($imagePath === null) {
+                    return new JsonResponse(['success' => false, 'message' => 'Erreur lors de l\'upload de l\'image']);
+                }
+    
+                $hotel->setImageHotel($imagePath); 
+            }
+    
             $entityManager->persist($hotel);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
 
-        return $this->render('hotel/new.html.twig', [
-            'hotel' => $hotel,
-            'form' => $form,
-        ]);
+        return new JsonResponse(['success' => false, 'errors' => (string) $form->getErrors(true, false)]);
     }
 
-    #[Route('/{id}', name: 'app_hotel_show', methods: ['GET'])]
-    public function show(Hotel $hotel): Response
+    #[Route('/new-form', name: 'app_hotel_form', methods: ['GET'])]
+    public function getForm(Request $request, HotelRepository $hotelRepository): Response
     {
-        return $this->render('hotel/show.html.twig', [
-            'hotel' => $hotel,
+        $id = $request->query->get('id');
+        $hotel = $id ? $hotelRepository->find($id) : new Hotel();
+        $form = $this->createForm(HotelType::class, $hotel);
+    
+        return $this->render('reuse/_form.html.twig', [
+            'form' => $form->createView(),
+            'id' => $id,
+            'type' => $hotel->getLibelleHotel() ? 'Mettre à jour' : 'Créer',
+            'entity' => 'hotel',
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_hotel_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit/{id}', name: 'app_hotel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(HotelType::class, $hotel);
@@ -59,12 +84,12 @@ final class HotelController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
+            return new JsonResponse(['success' => true]);
         }
-
-        return $this->render('hotel/edit.html.twig', [
-            'hotel' => $hotel,
-            'form' => $form,
+    
+        return new JsonResponse([
+            'success' => false,
+            'errors' => (string) $form->getErrors(true, false)
         ]);
     }
 
