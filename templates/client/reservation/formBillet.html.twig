@@ -1,0 +1,174 @@
+{{ form_start(form, {'attr':{class:'w-[80%] mb-10'}}) }}
+<div class="w-full bors" id="displayBillet">
+    <div class="mb-5 w-full">
+        <h1 class="text-2xl font-bold text-bleuLune mb-1">Réservation de vos billets</h1>
+        <span class="block h-[2px] w-full bg-bleuLune"></span>
+    </div>
+    <div class="w-full">
+        <div class="flex justify-between items-end w-[80%]">
+            {{ form_row(form.debutBillet) }}
+            <span>-</span>
+            {{ form_row(form.finBillet) }}
+        </div>
+
+        <div class="w-[80%] mt-5" id="reserverBillet">
+            <div>
+                <div class="flex flex-row justify-between items-center mb-1">
+                    <h2 class="text-lg font-bold text-bleuLune mb-1">Nombre de personnes</h2>
+                    <button id='btnAddPersonne' type="button" class=" py-1 px-4 bg-slate-700 text-white rounded hover:bg-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200">Ajouter une personne</button>
+                </div>
+                <span class="block h-[2px] bg-bleuLune"></span>
+            </div>
+        </div>
+        <span class="block h-[2px] w-[80%] bg-bleuLune mt-5"></span>
+        <div class="w-[80%]">
+            <button id="btnValidateBillet" disabled type="button" class="mt-5 py-1 px-4 bg-slate-700 text-white rounded hover:bg-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200">
+                Etape suivante
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const addButton = document.getElementById("btnAddPersonne");
+        const reserverBilletDiv = document.getElementById("reserverBillet");
+        const validateButton = document.getElementById("btnValidateBillet");
+
+        const debutBillet = document.getElementById("reserver_billet_debutBillet");
+        const finBillet = document.getElementById("reserver_billet_finBillet");
+
+        const totalPriceElementB = document.createElement("div"); 
+        totalPriceElementB.classList.add("text-xl", "font-bold", "mt-5");
+        reserverBilletDiv.appendChild(totalPriceElementB);
+
+        debutBillet.addEventListener('change', function(event){
+            finBillet.min = event.target.value;
+            if (finBillet.value && finBillet.value < selectedDate) {
+                finBillet.value = '';
+            }
+        });
+
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            document.querySelectorAll(".select-billet").forEach(select => {
+                const selectedOption = select.options[select.selectedIndex];
+                if (!selectedOption) return; // sécurise contre null/undefined
+
+                const price = parseFloat(selectedOption.getAttribute("data-price")) || 0;
+                totalPrice += price;
+            });
+            totalPriceElementB.innerText = `Prix total : ${totalPrice.toFixed(2)} €`;
+        }
+
+        function updateDateLimits() {
+            if (debutBillet.value) {
+                dateReservation.min = debutBillet.value + "T00:00"; // Ajout d'une heure minimale
+            }
+            if (finBillet.value) {
+                dateReservation.max = finBillet.value + "T23:59"; // Ajout d'une heure maximale
+            }
+        }
+
+        let addPersonne = 0;
+        validateButton.style.opacity = 0.5;
+        addButton.addEventListener("click", function () {
+            const newFields = document.createElement("div");
+            newFields.classList.add("flex", "justify-between", "gap-4", "mt-3");
+
+            const uniqueId = "personne_" + Date.now();
+            newFields.id = uniqueId;
+            addPersonne +=1;
+            validateButton.disabled = false;
+            validateButton.style.opacity = 1;
+
+            newFields.innerHTML = `
+                <div class="flex gap-1.5">
+                    <div class="flex flex-col gap-2 mb-4">
+                        <label for="prenom" class="text-bleuLune font-semibold">Prénom</label>
+                        <input type="text" name="prenom[]" id="prenom" 
+                               class="border border-bleuLune p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair" 
+                                required autofocus>
+                    </div>
+                    <div class="flex flex-col gap-2 mb-4">
+                        <label for="nom" class="text-bleuLune font-semibold">Nom</label>
+                        <input type="text" name="nom[]" id="nom" 
+                               class="border border-bleuLune p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair" 
+                                required autofocus>
+                    </div>
+                </div>
+                <div class="flex items-center gap-10 justify-between">
+                    <select name="fBillet[]" class="select-billet border-bleuLune rounded border p-2">
+                        {% for billet in formatsBillet %}
+                            <option value="{{ billet.idBillet }}" data-price="{{ billet.prixBillet }}">{{ billet.libelleBillet }} - {{ billet.prixBillet }} €</option>
+                        {% endfor %}
+                    </select>
+                    <button type="button" class="rounded bg-red-700 p-1 hover:cursor-pointer delete-btn-personne" data-target="${uniqueId}">
+                        {{ include('svg/delete-svg.html.twig') }}
+                    </button>
+                </div>
+            `;
+
+            reserverBilletDiv.appendChild(newFields);
+            newFields.querySelector(".select-billet").addEventListener("change", updateTotalPrice);
+            updateTotalPrice();
+        });
+
+
+        document.addEventListener("click", function (event) {
+            if (event.target.closest(".delete-btn-personne")) {
+                const targetId = event.target.closest(".delete-btn-personne").getAttribute("data-target");
+                document.getElementById(targetId)?.remove();
+                updateTotalPrice();
+                addPersonne -=1;
+                if(addPersonne <=0){
+                    validateButton.disabled = true;
+                    validateButton.style.opacity = 0.5;
+                }
+            }
+        });
+
+        document.addEventListener("change", function (event) {
+            if (event.target.classList.contains("select-billet")) {
+                updateTotalPrice();
+            }
+        });
+
+        validateButton.addEventListener("click", function () {
+            let isValid = true;
+            document.querySelectorAll("#reserverBillet input, #reserverBillet select").forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.classList.add("border-red-500");
+                } else {
+                    input.classList.remove("border-red-500");
+                }
+            });
+
+            if (!debutBillet || debutBillet.value === "") {
+                isValid = false;
+                debutBillet.classList.add("border-red-500");
+            }
+
+            if (!finBillet || finBillet.value === "") {
+                isValid = false;
+                finBillet.classList.add("border-red-500");
+            }
+
+            if (isValid) {
+                displayBillet.style.display = "none";
+                displayHotel.style.display = "block";
+                headBillet.style.display = "none";
+                headHotel.style.display = "flex";
+            } else {
+                alert("Merci de remplir tous les champs avant de valider !");
+            }
+        });
+});
+</script>
+{{ form_end(form) }}
+
+
+

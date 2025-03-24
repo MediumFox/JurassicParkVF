@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réserver votre aventure{% endblock %}
+
+{% block body %}
+
+    {% include 'reuse/hero.html.twig' %}
+    <div class="flex items-center justify-center p-5 gap-10 w-full">
+        {% if type == "billet" %}
+            {% include 'client/reservation/formBillet.html.twig' %}
+        {% elseif type == "hotel" %}
+            {% include 'client/reservation/formHotel.html.twig' %}
+        {% else %}
+            {% include 'client/reservation/formRestaurant.html.twig' %}
+        {% endif %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+<form class="w-[80%] mb-10">
+    <div class="w-full bors" id="displayBillet">
+        <div class="mb-5 w-full">
+            <h1 class="text-2xl font-bold text-bleuLune mb-1">Réservation de votre hôtel</h1>
+            <span class="block h-[2px] w-full bg-bleuLune"></span>
+        </div>
+        <div class=" w-[80%] mt-5 flex flex-col gap-3" id="reserverHotel">
+            {% for h in hotels %}
+                <div class="w-full transition duration-500 card-hotel">
+                    <div class="flex gap-4 w-full">
+                        <div>
+                            <img src={{h.imageHotel}} alt="img {{h.libelleHotel}}" class="h-[120px] w-auto rounded"/>
+                        </div>
+                        <div class="flex flex-col  w-full ">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-bold text-lg text-slate-900 underline">{{h.libelleHotel}}</span>
+                                <span>{{h.biome.libelleBiome}}</span>
+                            </div>
+                            <span>{{h.descriptionHotel}}<span>
+                        </div>
+                        <div class="flex items-center flex-col justify-between">
+                            <svg class="fill-slate-900" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                            </svg>
+                            <input type="radio" id="choixHotel" name="choixHotel" value={{h.idHotel}}/>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</form>
+
+

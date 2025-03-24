@@ -23,11 +23,11 @@ class BiomeFixtures extends Fixture
             ['Lac', "Un grand plan d’eau entouré de végétation aquatique, idéal pour les espèces semi-aquatiques."]
         ];
 
-        foreach ($biomes as [$libelle, $description]) {
+        foreach ($biomes as $index => [$libelle, $description]) {
             $biome = new Biome();
             $biome->setLibelleBiome($libelle);
             $biome->setDescriptionBiome($description);
-
+            $this->addReference('biome_' . $index, $biome);
             $manager->persist($biome);
         }
 
