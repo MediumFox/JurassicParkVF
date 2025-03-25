@@ -29,7 +29,9 @@ final class RestaurantController extends AbstractController
                 'title'=> "L'index des restaurants",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'restaurant',
+            'formRoute' => $this->generateUrl('app_restaurant_form')
         ]);
     }
 
@@ -102,6 +104,7 @@ final class RestaurantController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_restaurant_index', [], Response::HTTP_SEE_OTHER);
+        $this->removeImg($restaurant->getImageRestaurant(), 'Restaurants');
+        return $this->redirectToRoute('app_restaurant_index', [], status: Response::HTTP_SEE_OTHER);
     }
 }

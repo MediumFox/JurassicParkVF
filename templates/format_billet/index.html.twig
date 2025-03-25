@@ -25,11 +25,11 @@
                                     <span>{{ format_billet.prixBillet }}€</span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span>{{format_billet.descriptionBillet}}</span>
+                                    <span class="italic text-bleuGlace line-clamp-3 my-1.5">{{format_billet.descriptionBillet}}</span>
                                 </div>
         
                                 <div class="flex justify-end gap-2 mt-2">
-                                    {{ include('format_billet/_delete.html.twig') }}
+                                    {{ include('format_billet/_delete_form.html.twig') }}
                                     <span onClick="mettreAJourData({{format_billet.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
                                         {{ include('svg/update-svg.html.twig') }}
                                     <span/>

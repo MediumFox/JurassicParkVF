@@ -24,7 +24,9 @@ final class JourController extends AbstractController
                 'title'=> "L'index des jours",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'jour',
+            'formRoute' => $this->generateUrl('app_jour_form')
         ]);
     }
 

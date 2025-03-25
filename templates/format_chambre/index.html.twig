@@ -20,16 +20,16 @@
                             <div class="px-3 pb-3 pt-2 relative">
                                 <div class="flex justify-between">
                                     <div class="flex flex-row items-center">
-                                        <span class="font-bold text-center">{{ format_chambre.libelleFormat }}</span>
+                                        <span class="font-bold text-center">{{ format_chambre.libelleFormatChambre }}</span>
                                     </div>
-                                    <span>{{ format_chambre.prixFormat }}€</span>
+                                    <span>{{ format_chambre.prixFormatChambre }}€</span>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span>{{format_chambre.descriptionFormat}}</span>
+                                    <span class="italic text-bleuGlace line-clamp-3 my-1.5">{{format_chambre.descriptionFormatBillet}}</span>
                                 </div>
         
                                 <div class="flex justify-end gap-2 mt-2">
-                                    {{ include('format_chambre/_delete.html.twig') }}
+                                    {{ include('format_chambre/_delete_form.html.twig') }}
                                     <span onClick="mettreAJourData({{format_chambre.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
                                         {{ include('svg/update-svg.html.twig') }}
                                     <span/>

@@ -24,7 +24,9 @@ final class BiomeController extends AbstractController
                 'title'=> "L'index des biomes",
                 'description' => "Retrouvez-ici tous les biomes qui sont reliés aux restaurants, aux hôtels ainsi qu'aux enclos. Les suppresions peuvent avoir un fort impact sur le site, soyez prudent.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'biome',
+            'formRoute' => $this->generateUrl('app_biome_form')
         ]);
     }
 

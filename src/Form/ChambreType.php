@@ -19,7 +19,8 @@ class ChambreType extends AbstractType
         $builder
             ->add('numeroChambre', TextType::class, [
                 'attr'=>[
-                    'placeholder'=>'Exemple : 166'
+                    'placeholder'=>'Exemple : 166',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -32,6 +33,9 @@ class ChambreType extends AbstractType
                 ]
             ])
             ->add('etageChambre', ChoiceType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
+                ],
                 'label' => 'Quel étage',
                 'choices' => [
                     'Premier' => 'Premier étage',
@@ -45,6 +49,9 @@ class ChambreType extends AbstractType
                 ]
             ])
             ->add('hotel', EntityType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
+                ],
                 'class' => Hotel::class,
                 'choice_label' => 'id',
             ])

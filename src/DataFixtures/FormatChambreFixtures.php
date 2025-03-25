@@ -2,11 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\FormatBillet;
 use App\Entity\FormatChambre;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry; 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class FormatChambreFixtures extends Fixture implements DependentFixtureInterface
@@ -27,7 +26,7 @@ class FormatChambreFixtures extends Fixture implements DependentFixtureInterface
             ['Tente Safari', "Tente équipée pour une immersion totale dans le décor préhistorique, avec confort moderne.", 100],
         ];
 
-        foreach ($formats as [$libelle, $description, $image, $prix]) {
+        foreach ($formats as [$libelle, $description, $prix]) {
             $format = new FormatChambre();
             $format->setLibelleFormatChambre($libelle);
             $format->setDescriptionFormatBillet($description);

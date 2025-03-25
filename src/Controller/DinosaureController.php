@@ -28,7 +28,9 @@ final class DinosaureController extends AbstractController
                 'title'=> "L'index des dinosaures",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'dinosaure',
+            'formRoute' => $this->generateUrl('app_dinosaure_form')
         ]);
     }
 
@@ -101,6 +103,7 @@ final class DinosaureController extends AbstractController
             $entityManager->flush();
         }
 
+        $this->removeImg($dinosaure->getImageDinosaure(), 'Dinosaures');
         return $this->redirectToRoute('app_dinosaure_index', [], Response::HTTP_SEE_OTHER);
     }
 }

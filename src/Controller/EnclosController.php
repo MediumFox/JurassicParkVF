@@ -24,7 +24,9 @@ final class EnclosController extends AbstractController
                 'title'=> "L'index des enclos",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'enclos',
+            'formRoute' => $this->generateUrl('app_enclos_form')
         ]);
     }
 

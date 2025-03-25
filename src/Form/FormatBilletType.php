@@ -20,7 +20,8 @@ class FormatBilletType extends AbstractType
             ->add('libelleBillet', TextType::class, [
                 'attr'=>[
                     'placeholder'=>'Exemple : prenium...',
-                ],
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],         
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
                     new Assert\Length([
@@ -29,12 +30,23 @@ class FormatBilletType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
-            ->add('imageBillet0', FileType::class)
+            ->add('imageBillet', FileType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
+            ])
             ->add('descriptionBillet', TextareaType::class, [
                 'attr'=>[
-                    'placeholder'=>'...'
+                    'placeholder'=>'...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description est obligatoire']),
@@ -44,13 +56,20 @@ class FormatBilletType extends AbstractType
                         'minMessage' => 'La description doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'La description ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('prixBillet', NumberType::class, [
                 'attr'=>[
                     'placeholder'=> 'Exemple : 20.99',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair',
                     'min'=>20,
                     'max'=>10000,
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prix est obligatoire']),

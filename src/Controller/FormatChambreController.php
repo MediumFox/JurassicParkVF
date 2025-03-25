@@ -24,7 +24,9 @@ final class FormatChambreController extends AbstractController
                 'title'=> "L'index des formats de chambre",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'format de chambre',
+            'formRoute' => $this->generateUrl('app_format_chambre_form')
         ]);
     }
 

@@ -20,12 +20,19 @@ class DinosaureType extends AbstractType
     {
         $builder
             ->add('imageDinosaure', FileType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Une image est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('libelleDinosaure', TextType::class,[
                 'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5',
                     'placeholder'=>'Exemple : T-Rex'
                 ],
                 'constraints' => [
@@ -36,10 +43,16 @@ class DinosaureType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('regimeDinosaure', ChoiceType::class, [
                 'label' => 'Régime du dinosaure',
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
                 'choices' => [
                     'Herbivores' => 'Herbivores',
                     'Carnivores' => 'Carnivores',
@@ -48,7 +61,10 @@ class DinosaureType extends AbstractType
                 'placeholder' => 'Sélectionnez un régime',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le régime est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('ereDinosaure', ChoiceType::class, [
                 'label' => 'Ere du dinosaure',
@@ -65,6 +81,12 @@ class DinosaureType extends AbstractType
                     'Ordovicien' => 'Ordovicien',
                     'Cambrien' => 'Cambrien',
                 ],
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
                 'placeholder' => 'Sélectionnez une ère',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'L&apos;étage est obligatoire']),
@@ -72,7 +94,8 @@ class DinosaureType extends AbstractType
             ])
             ->add('descriptionDinosaure', TextareaType::class, [
                 'attr'=>[
-                    'placeholder'=>'...'
+                    'placeholder'=>'...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description est obligatoire']),
@@ -82,11 +105,20 @@ class DinosaureType extends AbstractType
                         'minMessage' => 'La description doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'La description ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('enclos', EntityType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
                 'class' => Enclos::class,
                 'choice_label' => 'id',
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
         ;
     }

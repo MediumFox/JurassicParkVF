@@ -24,7 +24,9 @@ final class ChambreController extends AbstractController
                 'title'=> "L'index des chambres",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'chambre',
+            'formRoute' => $this->generateUrl('app_chambre_form')
         ]);
     }
 

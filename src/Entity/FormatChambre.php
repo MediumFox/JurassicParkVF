@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\FormatChambreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FormatChambreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: FormatChambreRepository::class)]
 class FormatChambre
@@ -21,7 +23,14 @@ class FormatChambre
 
     #[ORM\Column(length: 1000)]
     private ?string $descriptionFormatBillet = null;
-
+    
+    #[ORM\OneToMany(mappedBy: 'formatChambre', targetEntity: Chambre::class)]
+    private Collection $chambres;
+    
+    public function __construct()
+    {
+        $this->chambres = new ArrayCollection();
+    }
     public function getId(): ?int
     {
         return $this->id;

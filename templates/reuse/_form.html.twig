@@ -6,7 +6,7 @@
 
     {{ form_widget(form) }}
 
-    <button type="submit" class="bg-bleuLune text-white px-4 py-2 rounded w-full mt-4">
+    <button type="submit" id="btnSubmit" class="bg-bleuLune text-white px-4 py-2 rounded w-full mt-4 cursor-pointer">
         {{ type }}
     </button>
 </form>
@@ -14,7 +14,8 @@
 <script>
 document.getElementById("form").addEventListener("submit", function(e) {
     e.preventDefault();
-
+    let btnSubmit = document.getElementById('btnSubmit');
+    btnSubmit.disabled = true;
     const form = e.target;
     const data = new FormData(form);
     const errors = document.getElementById("form-errors");

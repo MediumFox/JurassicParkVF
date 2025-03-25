@@ -4,16 +4,20 @@ namespace App\Controller;
 
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
+use Symfony\Component\Mime\Email;
 use App\Repository\DinosaureRepository;
 use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/admin/restaurant')]
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+
+
 final class UserController extends AbstractController
 {
     #[Route('/', name: 'app_user_accueil', methods: ['POST'])]
@@ -91,4 +95,24 @@ final class UserController extends AbstractController
         }
         return new JsonResponse(['success' => false]);
     }
+
+
+    #[Route('/test', name: 'app_test', methods: ['GET'])]
+    public function test(MailerInterface $mailer): JsonResponse
+    {
+        $email = (new Email())
+            ->from('no-reply@mon-site.com')
+            ->to('axelrenard.pro@gmail.com')
+            ->subject('Votre code de vérification')
+            ->text("Votre code de vérification est : 123456");
+    
+            try {
+                $mailer->send($email);
+            } catch (TransportExceptionInterface $e) {
+                return new JsonResponse(['error' => $e->getMessage()]);
+            }
+    
+        return new JsonResponse(['success' => true, 'message' => 'Email envoyé']);
+    }
+    
 }

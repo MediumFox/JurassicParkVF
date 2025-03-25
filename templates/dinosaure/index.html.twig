@@ -16,19 +16,24 @@
             <div class="grid-cols-4 grid-rows-4 grid gap-7 overflow-hidden">
                 {% if dinosaures is not empty %}
                     {% for dinosaure in dinosaures|slice(0, 16) %}
-                        <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg h-[170px]">
+                        <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg ">
+                            <div class="relative">
+                                <span class="absolute bottom-1 left-1 px-2 py-1 text-xs bg-slate-900 rounded ml-1 mb-1 font-bold text-white">
+                                    {{ dinosaure.enclos is not null ? dinosaure.enclos.libelleEnclos : 'Pas de biome défini' }}
+                                </span>
+                            </div>
                             <div class="px-3 pb-3 pt-2 relative flex flex-col justify-between h-[100%]">
-
-                                <div class="flex justify-between">
+                                 <div class="flex justify-between">
                                     <div class="flex flex-row items-center">
-                                        <span class="font-bold text-center">{{ dinosaure.libelleDinosaure }}</span>
+                                        <img src="{{ asset(dinosaure.imageDinosaure) }}" class="mr-1.5 w-[35px] h-[35px]" />
+                                        <span class="font-bold text-center ml-1  text-lg line-clamp-1">{{ dinosaure.libelleDinosaure }}</span>
                                     </div>
                                 </div>
                                 <div class="flex flex-col">
-                                    <span>{{dinosaure.descriptionDinosaure}}</span>
+                                    <span class="italic text-bleuGlace line-clamp-3 my-1.5">{{dinosaure.descriptionDinosaure}}</span>
                                     <div class="flex flex-row justify-between my-2">
-                                        <span><strong>Régime :</strong> {{dinosaure.regimeDinosaure}}</span>
-                                        <span><strong>Ere : </strong>{{dinosaure.ereDinosaure}}</span>
+                                        <span class="text-xs"><strong>Régime :</strong> {{dinosaure.regimeDinosaure}}</span>
+                                        <span class="text-xs"><strong>Ere : </strong>{{dinosaure.ereDinosaure}}</span>
                                     </div>
                                 </div>
                                 <div class="flex flex-row justify-between items-end">
@@ -38,7 +43,7 @@
                                         </span>
                                     </div>
                                     <div class="flex justify-end gap-2 mt-2">
-                                        {{ include('dinosaure/_delete.html.twig') }}
+                                        {{ include('dinosaure/_delete_form.html.twig') }}
                                         <span onClick="mettreAJourData({{dinosaure.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
                                             {{ include('svg/update-svg.html.twig') }}
                                         <span/>

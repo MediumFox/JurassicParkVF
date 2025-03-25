@@ -28,7 +28,9 @@ final class HotelController extends AbstractController
                 'title'=> "L'index des hôtels",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'hôtel',
+            'formRoute' => $this->generateUrl('app_hotel_form')
         ]);
     }
 
@@ -96,11 +98,12 @@ final class HotelController extends AbstractController
     #[Route('/{id}', name: 'app_hotel_delete', methods: ['POST'])]
     public function delete(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$hotel->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $hotel->getId(), $request->request->get('_token'))) {
             $entityManager->remove($hotel);
             $entityManager->flush();
         }
-
+    
+        $this->removeImg($hotel->getImageHotel(), 'Hotels');
         return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
     }
 }

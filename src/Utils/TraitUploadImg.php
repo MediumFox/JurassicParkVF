@@ -12,11 +12,11 @@ trait TraitUploadImg
         $validTypes = ['image/jpeg', 'image/png', 'image/gif'];
 
         if (!in_array($file->getMimeType(), $validTypes)) {
-            return null; // type non valide
+            return null; 
         }
 
         if ($file->getSize() > 5 * 1024 * 1024) {
-            return null; // trop gros
+            return null; 
         }
 
         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
@@ -32,9 +32,25 @@ trait TraitUploadImg
         try {
             $file->move($targetDir, $newFilename);
         } catch (\Exception $e) {
-            return null; // erreur de déplacement
+            return null; 
         }
 
         return 'img/' . $entityFolder . '/' . $newFilename; // chemin relatif pour affichage web
+    }
+
+    public function removeImg(string $fileName, string $entityFolder): ?bool
+    {
+        $targetDir = dirname(__DIR__, 2) . '/public/img/' . $entityFolder;
+        $filePath = $targetDir . '/' . $fileName;
+    
+        if (!file_exists($filePath)) {
+            return null; // fichier introuvable
+        }
+    
+        try {
+            unlink($filePath); // suppression du fichier
+        } catch (\Exception $e) {
+            
+        }
     }
 }

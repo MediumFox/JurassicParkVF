@@ -24,7 +24,9 @@ final class FormatBilletController extends AbstractController
                 'title'=> "L'index des formats de billet",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'format de billet',
+            'formRoute' => $this->generateUrl('app_format_billet_form')
         ]);
     }
 
