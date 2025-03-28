@@ -77,14 +77,29 @@ final class ProduitController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(ProduitType::class, $produit);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $imageFile = $form->get('imageDinosaure')->getData();
 
+            if ($imageFile) {
+                if ($produit->getImageProduit()) {
+                    $this->removeImg($produit->getImageProduit(), 'Dinosaures');
+                }
+    
+                $imagePath = $this->uploadImg($imageFile, 'Dinosaures', $slugger);
+    
+                if ($imagePath === null) {
+                    return new JsonResponse(['success' => false, 'message' => 'Erreur lors de l\'upload de l\'image']);
+                }
+    
+                $produit->setImageProduit($imagePath);
+            }
+    
+            $entityManager->flush();
             return new JsonResponse(['success' => true]);
         }
     
@@ -104,5 +119,25 @@ final class ProduitController extends AbstractController
 
         $this->removeImg($produit->getImageProduit(), 'Produits');
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle', name: 'app_produit_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, ProduitRepository $produitRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $produits = $produitRepository->filterName($libelle);
+
+        if (!$produits) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('produit/_produit_cards.html.twig', [
+            'produits' => $produits,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

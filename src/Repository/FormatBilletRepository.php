@@ -16,6 +16,17 @@ class FormatBilletRepository extends ServiceEntityRepository
         parent::__construct($registry, FormatBillet::class);
     }
 
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleBillet like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return FormatBillet[] Returns an array of FormatBillet objects
     //     */

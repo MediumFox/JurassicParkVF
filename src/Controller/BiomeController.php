@@ -90,4 +90,24 @@ final class BiomeController extends AbstractController
 
         return $this->redirectToRoute('app_biome_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/filter-libelle-biome', name: 'app_biome_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, BiomeRepository $biomeRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $biomes = $biomeRepository->filterName($libelle);
+
+        if (!$biomes) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('biome/_biome_cards.html.twig', [
+            'biomes' => $biomes,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
+    }
 }

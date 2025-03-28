@@ -90,4 +90,24 @@ final class FormatChambreController extends AbstractController
 
         return $this->redirectToRoute('app_format_chambre_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/filter-libelle-format-chambre', name: 'app_format_chambre_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, FormatChambreRepository $formatChambre): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $fChambres = $formatChambre->filterName($libelle);
+
+        if (!$fChambres) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('format_chambre/_format_chambre_cards.html.twig', [
+            'format_chambres' => $fChambres,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
+    }
 }

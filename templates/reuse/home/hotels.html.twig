@@ -1,0 +1,45 @@
+<div class="w-full min-h-[70vh] flex flex-col items-center p-5 m-10 relative -top-9">
+    <div class="w-[80%] min-h-[50%]">
+            
+        <div class="text-center mb-10">
+            <h1 class="mb-6 text-3xl text-bleuLune font-bold text-center">Nos hôtels</h1>
+            <div class="w-20 h-1 bg-bleuLune mx-auto mt-2 rounded animate-pulse"></div>
+            <p class="text-bleuGlace mt-2 italic text-sm">Prévisions des prochains jours pour nos visiteurs intrépides, soyez vigilant en cas de fortes pluies (avalanches, éboulements ou glissements de terrains fréquent)</p>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-gradient-move pointer-events-none z-0"></div>
+
+        <div class="w-full flex flex-wrap justify-center gap-20 relative z-10 border border-gray-300 py-10 px-20 shadow-2xl rounded-3xl bg-white/80 backdrop-blur-md transition-all duration-500">
+            {% for h in randomHotels %}
+                <div class="rounded-lg overflow-hidden relative w-[45%] h-[350px] shadow-lg transition transform hover:scale-105 bg-slate-900">
+                    <div class="h-[55%] overflow-hidden">
+                        <img 
+                            src="{{ asset(h.imageHotel) }}" 
+                            alt="{{ h.libelleHotel }}" 
+                            class="w-full h-full object-cover"
+                        >
+                    </div>
+
+                    <span class="absolute top-3 left-3 z-10 px-3 py-1 bg-white rounded text-bleuLune font-bold shadow-md">
+                        {{ h.libelleHotel }}
+                    </span>
+
+                    <div class="p-4 flex flex-col justify-between h-[45%]">
+                        <p class="text-white italic line-clamp-3 mb-3 text-sm w-[90%] leading-snug">
+                            {{h.descriptionHotel}}
+                        </p>
+                        <div class="flex items-center text-xs">
+                            <span class="text-white font-bold text-lg">
+                                Biome : <i class="text-bleuGlace">{{ h.biome.libelleBiome }}</i>
+                            </span>
+                            <a href="#" class="rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 -right-5 hover:scale-105 cursor-pointer hover:underline">
+                                En savoir plus
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p class="text-center text-bleuGlace italic">Aucun restaurant disponible pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>

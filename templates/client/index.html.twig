@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les clients{% endblock %}
+
+{% block body %}
+    {% include 'reuse/hero.html.twig' %}
+    <div class="flex justify-around p-5 gap-10">
+        <div class="w-[30%]">
+            {% include 'reuse/dashboard-admin.html.twig' %}
+        </div>
+        <div class="w-[70%] mx-auto p-2">
+            <h1 class="font-bold text-2xl mb-3.5 underline">Les clients</h1>
+            <div class="flex justify-between items-center w-full  mb-10">
+                <div class="flex flex-col ">
+                    <label for='filterName' class="underline mb-1 text-bleuLune font-bold">Trier par Nom/Prénom :</label>
+                    <input type='text' oninput="filterName()" class="border border-bleuGlace p-0.5 w-[20vw] rounded focus:outline-none focus:ring-2 focus:ring-bleuClair" id='filterName'/>
+                </div>
+            </div>
+            <div class="w-full overflow-hidden" id="clientContainer">
+                {% if clients is not empty %}
+                    {% include 'client/_client_cards.html.twig' %}
+                {% else %}
+                    <span>Aucun client trouvé</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'reuse/display/updateDisplay.html.twig' %}
+
+<script>
+    function filterName() {
+    const container = document.getElementById("clientContainer");
+    const libelle = document.getElementById("filterName").value;
+    const url = "{{ path('app_client_filter_name') }}?libelle=" + encodeURIComponent(libelle);
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                container.innerHTML = "<p class='text-red-500 text-sm'>Aucun client trouvé.</p>";
+                return;
+            }
+            container.innerHTML = data.html;
+        })
+        .catch(error => {
+            console.error(error);
+            container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
+        });
+    }
+</script>
+{% endblock %}

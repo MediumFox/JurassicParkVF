@@ -16,6 +16,17 @@ class RestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, Restaurant::class);
     }
 
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleRestaurant like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Restaurant[] Returns an array of Restaurant objects
     //     */

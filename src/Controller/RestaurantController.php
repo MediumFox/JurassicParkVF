@@ -79,14 +79,29 @@ final class RestaurantController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_restaurant_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Restaurant $restaurant, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Restaurant $restaurant, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(RestaurantType::class, $restaurant);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $imageFile = $form->get('imageDinosaure')->getData();
 
+            if ($imageFile) {
+                if ($restaurant->getImageRestaurant()) {
+                    $this->removeImg($restaurant->getImageRestaurant(), 'Dinosaures');
+                }
+    
+                $imagePath = $this->uploadImg($imageFile, 'Dinosaures', $slugger);
+    
+                if ($imagePath === null) {
+                    return new JsonResponse(['success' => false, 'message' => 'Erreur lors de l\'upload de l\'image']);
+                }
+    
+                $restaurant->setImageRestaurant($imagePath);
+            }
+    
+            $entityManager->flush();
             return new JsonResponse(['success' => true]);
         }
     
@@ -106,5 +121,25 @@ final class RestaurantController extends AbstractController
 
         $this->removeImg($restaurant->getImageRestaurant(), 'Restaurants');
         return $this->redirectToRoute('app_restaurant_index', [], status: Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-restaurant', name: 'app_restaurant_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, RestaurantRepository $restaurantRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $restaurants = $restaurantRepository->filterName($libelle);
+
+        if (!$restaurants) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('restaurant/_restaurant_cards.html.twig', [
+            'restaurants' => $restaurants,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

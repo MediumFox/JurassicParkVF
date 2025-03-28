@@ -78,14 +78,27 @@ final class DinosaureController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_dinosaure_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Dinosaure $dinosaure, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Dinosaure $dinosaure, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(DinosaureType::class, $dinosaure);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $imageFile = $form->get('imageDinosaure')->getData(); 
+            if ($imageFile) {
+                if ($dinosaure->getImageDinosaure()) {
+                    $this->removeImg($dinosaure->getImageDinosaure(), 'Dinosaures');
+                }
+                
+                $imagePath = $this->uploadImg($imageFile, 'Dinosaures', $slugger);
+    
+                if ($imagePath === null) {
+                    return new JsonResponse(['success' => false, 'message' => 'Erreur lors de l\'upload de l\'image']);
+                }
 
+                $dinosaure->setImageDinosaure($imagePath); 
+            }
+            $entityManager->flush();
             return new JsonResponse(['success' => true]);
         }
     
@@ -105,5 +118,27 @@ final class DinosaureController extends AbstractController
 
         $this->removeImg($dinosaure->getImageDinosaure(), 'Dinosaures');
         return $this->redirectToRoute('app_dinosaure_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-dinosaure', name: 'app_dinosaure_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, DinosaureRepository $dinosaureRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $regime = $request->query->get('regime');
+        $ere = $request->query->get('ere');
+        $dinosaures = $dinosaureRepository->filterName($libelle,$regime,$ere);
+
+        if (!$dinosaures) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('dinosaure/_dinosaure_cards.html.twig', [
+            'dinosaures' => $dinosaures,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

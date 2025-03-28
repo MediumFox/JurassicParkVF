@@ -13,32 +13,13 @@
                 <span class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm cursor-pointer">Créer une chambre</span>
             </div> 
             <h1 class="font-bold text-2xl mb-3.5 underline">Les chambres</h1>
-            <div class="grid-cols-4 grid-rows-4 grid gap-7 overflow-hidden">
+            <div class="flex flex-col mb-2">
+                <label for='filterName' class="underline mb-1 text-bleuLune font-bold">Trier par libellé :</label>
+                <input type='text' oninput="filterName()" class="border border-bleuGlace p-0.5 w-[20vw] rounded focus:outline-none focus:ring-2 focus:ring-bleuClair" id='filterName'/>
+            </div>
+            <div class="grid-cols-4 grid-rows-4 grid gap-7 overflow-hidden"  id="chambreContainer">
                 {% if chambres is not empty %}
-                    {% for chambre in chambres|slice(0, 16) %}
-                        <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg">
-                            <div class="px-3 pb-3 pt-2 relative">
-                                <div class="flex justify-between">
-                                    <span class="font-bold text-center">{{ chambre.numeroChambre }}</span>
-                                    <span><strong>Etage :</strong> {{chambre.etageChambre}}</span>
-                                </div>
-
-                                <div class="flex flex-row justify-between items-end">
-                                    <div class="mb-1">
-                                        <span class="text-xs bg-slate-900 rounded p-1 font-bold text-white">
-                                            {{ chambre.hotel is not null ? chambre.hotel.libelleHotel : "Pas d'hôtel défini" }}
-                                        </span>
-                                    </div>
-                                    <div class="flex justify-end gap-2 mt-2">
-                                        {{ include('chambre/_delete_form.html.twig') }}
-                                        <span onClick="mettreAJourData({{chambre.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
-                                            {{ include('svg/update-svg.html.twig') }}
-                                        <span/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                    {% include 'chambre/_chambre_cards.html.twig' %}
                 {% else %}
                     <span>Aucune chambre trouvé</span>
                 {% endif %}
@@ -47,4 +28,26 @@
     </div>
     {% include 'reuse/display/addDisplay.html.twig' %}
     {% include 'reuse/display/updateDisplay.html.twig' %}
+
+    <script>
+        function filterName() {
+            const container = document.getElementById("chambreContainer");
+            const libelle = document.getElementById("filterName").value;
+            const url = "{{ path('app_chambre_filter_name') }}?libelle=" + encodeURIComponent(libelle);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML = "<p class='text-red-500 text-sm'>Aucune chambre trouvé.</p>";
+                        return;
+                    }
+                    container.innerHTML = data.html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
+                });
+        }
+    </script>
 {% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+{% include 'reuse/hero.html.twig' %}
+<div class="w-full flex justify-center items-center">
+    <div class="w-[80%] flex justify-between p-10 py-15 flex-col">
+        <div class="pb-5 border-b-2 border-bleuLune w-full mb-5 flex">
+            <span class="font-bold text-bleuLune text-2xl">Modifier vos informations personnelles</span>
+        </div>
+        {{ form_start(form, { attr: { class: 'flex justify-baseline flex-col w-[80%]' } }) }}
+
+            {{ form_row(form.nom) }}
+            {{ form_row(form.prenom) }}
+            {{ form_row(form.email) }}
+            {{ form_row(form.numeroTelephone) }}
+            {{ form_row(form.password) }}
+            <button type="submit" class="mt-4 px-4 py-2 bg-bleuLune text-white rounded hover:bg-bleuGlace transition cursor-pointer">
+                Mettre à jour
+            </button>
+
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}

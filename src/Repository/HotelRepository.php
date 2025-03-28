@@ -16,6 +16,17 @@ class HotelRepository extends ServiceEntityRepository
         parent::__construct($registry, Hotel::class);
     }
 
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleHotel like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return LibelleHotel[] Returns an array of LibelleHotel objects
     //     */

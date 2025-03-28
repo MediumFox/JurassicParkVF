@@ -16,6 +16,17 @@ class ProduitRepository extends ServiceEntityRepository
         parent::__construct($registry, Produit::class);
     }
 
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleProduit like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Produit[] Returns an array of Produit objects
     //     */

@@ -19,17 +19,16 @@ class BiomeRepository extends ServiceEntityRepository
     //    /**
     //     * @return Biome[] Returns an array of Biome objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('b')
-    //            ->andWhere('b.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('b.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+       public function filterName(string $value): array
+       {
+           return $this->createQueryBuilder('b')
+               ->andWhere('b.libelleBiome like :val')
+               ->setParameter('val', '%' . $value . '%')
+               ->orderBy('b.id', 'ASC')
+               ->getQuery()
+               ->getResult()
+           ;
+       }
 
     //    public function findOneBySomeField($value): ?Biome
     //    {

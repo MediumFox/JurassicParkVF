@@ -27,7 +27,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $pwd = null;
+    private ?string $password = null;
 
     #[ORM\Column(length: 255)]
     private ?string $numeroTelephone = null;
@@ -62,12 +62,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getPassword(): ?string
     {
-        return $this->pwd;
+        return $this->password;
     }
 
-    public function setPassword(string $pwd): static
+    public function setPassword(string $password): static
     {
-        $this->pwd = $pwd;
+        $this->password = $password;
         return $this;
     }
 

@@ -24,31 +24,49 @@ class ClientRegistrationFormType extends AbstractType
             ->add('email', EmailType::class, [
                 'label'=> 'Adresse email',
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('nom', TextType::class, [
                 'label'=> 'Nom',
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('prenom', TextType::class, [
                 'label'=> 'Prénom',
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('numeroTelephone', TextType::class, [
                 'label'=> 'Numéro de téléphone',
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('adressePostal', TextType::class, [
 
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('codePostal', NumberType::class, [
                 'required' => true,
-                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair']
+                'attr'=>['class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('plainPassword', PasswordType::class, [
                 'mapped' => false,
@@ -64,6 +82,9 @@ class ClientRegistrationFormType extends AbstractType
                         'max' => 4096,
                     ]),
                 ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('agreeTerms', CheckboxType::class, [
                 'label'=> "Conditions d'utilisation",
@@ -72,6 +93,9 @@ class ClientRegistrationFormType extends AbstractType
                     new IsTrue([
                         'message' => 'You should agree to our terms.',
                     ]),
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mr-1.5'
                 ],
             ]);
     }

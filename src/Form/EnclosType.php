@@ -34,12 +34,12 @@ class EnclosType extends AbstractType
                     ])
                 ]
             ])
-            ->add('idBiome', EntityType::class, [
+            ->add('biome', EntityType::class, [
                 'attr'=>[
                     'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'class' => Biome::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelleBiome',
                 'label_attr' => [
                     'class' => 'text-bleuLune font-semibold mb-1 block'
                 ],

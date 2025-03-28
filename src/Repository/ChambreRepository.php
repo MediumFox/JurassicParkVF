@@ -29,20 +29,16 @@ class ChambreRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    //    /**
-    //     * @return Chambre[] Returns an array of Chambre objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.numeroChambre like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     //    public function findOneBySomeField($value): ?Chambre
     //    {

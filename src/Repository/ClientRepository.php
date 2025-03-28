@@ -16,6 +16,20 @@ class ClientRepository extends ServiceEntityRepository
         parent::__construct($registry, Client::class);
     }
 
+
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+        ->where('LOWER(b.nom) LIKE LOWER(:val)')
+        ->orWhere('LOWER(b.prenom) LIKE LOWER(:val)')
+        ->setParameter('val', '%' . $value . '%')
+        ->orderBy('b.id', 'ASC')
+        ->getQuery()
+        ->getResult();
+    
+    }
+
+
     //    /**
     //     * @return Client[] Returns an array of Client objects
     //     */

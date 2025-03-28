@@ -90,4 +90,24 @@ final class JourController extends AbstractController
 
         return $this->redirectToRoute('app_jour_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/filter-libelle-jour', name: 'app_jour_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, JourRepository $jourRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $jours = $jourRepository->filterName($libelle);
+
+        if (!$jours) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('jour/_jour_cards.html.twig', [
+            'jours' => $jours,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
+    }
 }

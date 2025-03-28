@@ -60,7 +60,7 @@ class RestaurantType extends AbstractType
             ])
             ->add('biome', EntityType::class, [
                 'class' => Biome::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelleBiome',
                 'attr'=>[
                     'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],

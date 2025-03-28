@@ -1,0 +1,18 @@
+{% for horaire in horaires|slice(0, 16) %}
+    <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg">
+        <div class="px-3 pb-3 pt-2 relative">
+            <div class="flex justify-between">
+                <div class="flex flex-col justify-baseline items-baseline">
+                    <span><strong class="text-bleuGlace">Ouverture :</strong> <i>{{ horaire.ouverture ? horaire.ouverture|date('Y-m-d H:i:s') : '' }}</i></span>
+                    <span><strong class="text-bleuGlace">Fermeture :</strong> <i>{{ horaire.fermeture ? horaire.fermeture|date('Y-m-d H:i:s') : '' }}</i></span>
+                </div>
+            </div>
+                <div class="flex justify-end gap-2 mt-2">
+                {{ include('horaire/_delete_form.html.twig') }}
+                <span onClick="mettreAJourData({{horaire.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                    {{ include('svg/update-svg.html.twig') }}
+                <span/>
+            </div>
+        </div>
+    </div>
+{% endfor %}

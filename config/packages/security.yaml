@@ -21,7 +21,7 @@ security:
                 check_path: app_login
                 enable_csrf: true
                 username_parameter: email
-                password_parameter: pwd
+                password_parameter: password
             logout:
                 path: app_logout
                 # where to redirect after logout

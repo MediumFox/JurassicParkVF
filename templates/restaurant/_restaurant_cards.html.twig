@@ -1,0 +1,22 @@
+{% for restaurant in restaurants|slice(0, 16)  %}
+    <div class="overflow-hidden bg-white border-[1px] border-gray-300 rounded-lg">
+        <div class="relative">
+            <img src="{{asset(restaurant.imageRestaurant)}}" alt="image {{ restaurant.libelleRestaurant }}" class="max-h-[130px] w-full object-cover">
+            <span class="absolute bottom-1 left-1 px-2 py-1 text-xs bg-slate-900 rounded ml-1 mb-1 font-bold text-white">
+                {{ restaurant.biome is not null ? restaurant.biome.libelleBiome : 'Pas de biome défini' }}
+            </span>
+        </div>
+        <div class="px-3 pb-3 pt-2">
+            <div class="flex justify-between">
+                <span class="font-bold">{{ restaurant.libelleRestaurant }}</span>
+                <span>{{ restaurant.nbTable }}</span>
+            </div>
+            <div class="flex justify-end gap-2 mt-2">
+                {{ include('restaurant/_delete_form.html.twig') }}
+                <span onClick="mettreAJourData({{restaurant.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                    {{ include('svg/update-svg.html.twig') }}
+                <span/>
+            </div>
+        </div>
+    </div>
+{% endfor %}

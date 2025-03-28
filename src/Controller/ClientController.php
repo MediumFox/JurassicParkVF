@@ -262,7 +262,7 @@ final class ClientController extends AbstractController
             $reserverRestaurant->setRestaurant($restaurant);
             $reserverRestaurant->setDateReservation($dateReservation);
             $reserverRestaurant->setNbPersonne(count($prenoms));
-
+            $reserverRestaurant->setPresent(false);
             $entityManager->persist($reserverRestaurant);
         }
 

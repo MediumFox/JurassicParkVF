@@ -1,0 +1,40 @@
+<div class="overflow-x-auto rounded-lg shadow-md">
+    <table class="min-w-full table-auto text-sm bg-white">
+        <thead class="bg-bleuLune text-white uppercase text-xs tracking-wider font-bold">
+            <tr>
+                <th class="px-6 py-3 text-left">Nom</th>
+                <th class="px-6 py-3 text-left">Prénom</th>
+                <th class="px-6 py-3 text-left">Email</th>
+                <th class="px-6 py-3 text-left">Téléphone</th>
+                <th class="px-6 py-3 text-left">Code postal</th>
+                <th class="px-6 py-3 text-left">Adresse</th>
+                <th class="px-6 py-3 text-left">Vérifié</th>
+                <th class="px-6 py-3 text-left"></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+            {% for client in clients|slice(0, 16) %}
+                <tr class="hover:bg-bleuGlace/10 transition">
+                    <td class="px-6 py-4">{{ client.nom }}</td>
+                    <td class="px-6 py-4">{{ client.prenom }}</td>
+                    <td class="px-6 py-4">{{ client.email }}</td>
+                    <td class="px-6 py-4">{{ client.numeroTelephone }}</td>
+                    <td class="px-6 py-4">{{ client.codePostal }}</td>
+                    <td class="px-6 py-4">{{ client.adressePostal }}</td>
+                    <td class="px-6 py-4">
+                        {% if client.isVerified %}
+                            <span class="inline-block px-2 py-1 text-xs font-semibold text-green-600 bg-green-100 rounded">Oui</span>
+                        {% else %}
+                            <span class="inline-block px-2 py-1 text-xs font-semibold text-red-600 bg-red-100 rounded">Non</span>
+                        {% endif %}
+                    </td>
+                    <td>                    
+                        <span onClick="mettreAJourData({{client.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                            {{ include('svg/update-svg.html.twig') }}
+                        <span/>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
