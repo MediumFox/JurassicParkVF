@@ -4,17 +4,21 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Form\ClientRegistrationFormType;
+use App\Utils\TraitEmailFormat;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Mime\Email;
+
 
 class ClientRegistrationController extends AbstractController
 {
+    use TraitEmailFormat;
+
     #[Route('/register', name: 'app_register_client')]
     public function register(
         Request $request,
@@ -40,14 +44,7 @@ class ClientRegistrationController extends AbstractController
             $entityManager->persist($client);
             $entityManager->flush();
 
-            $email = (new Email())
-            ->from('no-reply@mon-site.com')
-            ->to('axelrenard.pro@gmail.com')
-            ->subject('Votre code de vérification')
-            ->text("Votre code de vérification est : $otp");
-
-            $mailer->send($email);
-
+            $resultEmail = $this->sendEmailOtp($client->getEmail(), $otp, $mailer);
 
             return $this->redirectToRoute('app_verify_otp', ['id' => $client->getId()]);
         }
@@ -60,6 +57,7 @@ class ClientRegistrationController extends AbstractController
     #[Route('/verify-otp/{id}', name: 'app_verify_otp')]
     public function verifyOtp(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
+        
         if ($request->isMethod('POST')) {
             $enteredOtp = '';
             for ($i = 1; $i <= 6; $i++) {
@@ -76,9 +74,52 @@ class ClientRegistrationController extends AbstractController
                 $this->addFlash('danger', 'Code OTP incorrect.');
             }
         }
-
+        $request->getSession()->set('id', $client->getId());
         return $this->render('registration/verify_otp.html.twig', [
             'client' => $client
         ]);
     }
+
+    #[Route('/resendOtp', name: 'app_resend_otp')]
+    public function resendOtp(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer): JsonResponse
+    {
+        $id = $request->getSession()->get('id');
+    
+        if (!$id || !is_numeric($id)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'ID manquant dans la session. ID reçu : ' . var_export($id, true)
+            ]);
+        }
+    
+        $client = $entityManager->getRepository(Client::class)->find($id);
+    
+        if (!$client) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => 'Client introuvable pour l\'ID : ' . $id
+            ]);
+        }
+    
+        $otp = random_int(100000, 999999);
+        $client->setOtp($otp);
+        $entityManager->flush();
+
+        $resultEmail = $this->sendEmailOtp($client->getEmail(), $otp, $mailer);
+
+        if(!$resultEmail)
+        {
+            return new JsonResponse([
+                'success' => false,
+                'message' => "Problème dans l'envoie du code"
+            ]);
+        }
+    
+        return new JsonResponse([
+            'success' => true,
+            'message' => 'Un nouveau code a été envoyé.'
+        ]);
+    }
+    
+    
 }

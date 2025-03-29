@@ -8,6 +8,7 @@
             <div class="w-[70%] flex flex-col justify-center items-center p-8 h-full">
                 <h1 class="text-2xl font-bold text-bleuLune text-center mb-2 uppercase">Vérifions que c'est bien vous.</h1>
                 <span class="text-bleuGlace text-center mb-8">Un code vous a été envoyé à l'adresse suivante : {{client.email}}, notez le ci-dessous pour valider la création de votre compte.</span>
+                
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-{{ label }} bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -28,7 +29,7 @@
                 </form>
 
                 <p class="mt-4 text-bleuLune">
-                    Vous n'avez rien reçu ? <a href="{{ path('app_register_client') }}" class="text-bleuGlace underline" disabled>Nouveau code dans <span id="timerMail">60</span> s</a>
+                    Vous n'avez rien reçu ? <a onClick="resendOtp()" id="linkResend" class="text-bleuGlace underline" disabled>Nouveau code dans <span id="timerMail">60</span> s</a>
                 </p>
             </div>
         </div>
@@ -37,6 +38,9 @@
             class="absolute inset-0 w-full h-full object-cover z-0">
             <div class="absolute inset-0 z-10 bg-gradient-to-br from-gris via-bleuGlace to-bleuLune opacity-50"></div>
         </div>
+        <div id="toast" class="fixed top-[15%] right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg opacity-0 transition-opacity duration-500">
+            Nouveau code envoyé !
+        </div>
     </div>
 
     <script>
@@ -44,9 +48,48 @@
             return /^\d$/.test(value); 
         }
 
+        function showToast(message = "Nouveau code envoyé !") {
+            const toast = document.getElementById("toast");
+            toast.textContent = message;
+            toast.classList.remove("opacity-0");
+            toast.classList.add("opacity-100");
+
+            setTimeout(() => {
+                toast.classList.add("opacity-0");
+                toast.classList.remove("opacity-100");
+            }, 3000);
+        }
+
+        function resendOtp() {
+            const url = "{{ path('app_resend_otp') }}";
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Réponse du serveur :", data);
+
+                    if (!data.success) {
+                        showToast(`Erreur : ${data.message || "Échec de l'envoi du code"}`);
+                        return;
+                    }
+
+                    showToast(data.message || "Nouveau code envoyé !");
+                })
+                .catch(error => {
+                    console.error("Erreur fetch:", error);
+                    showToast("Erreur technique");
+                });
+
+            count = 60;
+            linkResend.disabled = true;
+            linkResend.style.cursor = "default";
+            counter.innerText = count;
+        }
+
         let count = 60;
         const counter = document.getElementById("timerMail");
         const form = document.getElementById("form");
+        const linkResend = document.getElementById("linkResend");
         const btnSubmit = document.getElementById("btnSubmit");
         const inputOtp = document.querySelectorAll(".valeur-opt");
         btnSubmit.style.opacity = '0.7';
@@ -54,6 +97,12 @@
             if(count != 0){
                 count -=1;
                 counter.innerText = count;
+            }
+
+            if(count === 0){
+                linkResend.disabled = false;
+                linkResend.style.cursor = "pointer";
+                linkResend.style.fontWeight = "bold";
             }
         }, 1000);
 

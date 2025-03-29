@@ -110,25 +110,6 @@ final class UserController extends AbstractController
         return new JsonResponse(['success' => false]);
     }
 
-
-    #[Route('/test', name: 'app_test', methods: ['GET'])]
-    public function test(MailerInterface $mailer): JsonResponse
-    {
-        $email = (new Email())
-            ->from('no-reply@mon-site.com')
-            ->to('axelrenard.pro@gmail.com')
-            ->subject('Votre code de vérification')
-            ->text("Votre code de vérification est : 123456");
-    
-            try {
-                $mailer->send($email);
-            } catch (TransportExceptionInterface $e) {
-                return new JsonResponse(['error' => $e->getMessage()]);
-            }
-    
-        return new JsonResponse(['success' => true, 'message' => 'Email envoyé']);
-    }
-    
     private function getRandomHotels(int $count = 4): array
     {
         $hotels = $this->hotelRepository->findAll();
