@@ -6,9 +6,12 @@ use App\Entity\Client;
 use App\Entity\Administrateur;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection as DoctrineCollection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -137,5 +140,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PayerBillet::class)]
+    private DoctrineCollection $payerBillets;
+
+    public function __construct()
+    {
+        $this->payerBillets = new ArrayCollection();
+    }
+
+    public function getPayerBillets(): Collection
+    {
+        return $this->payerBillets;
     }
 }

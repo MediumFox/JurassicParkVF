@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Remboursements{% endblock %}
+
+{% block body %}
+    <h1>Mes Remboursements</h1>
+
+    {% if remboursements is not empty %}
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date de demande</th>
+                <th>Motif</th>
+                <th>Statut</th>
+                <th>Montant</th>
+                <th>Billets concernés</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for remboursement in remboursements %}
+                <tr>
+                    <td>{{ remboursement.id }}</td>
+                    <td>{{ remboursement.dateDemande|date('d/m/Y H:i') }}</td>
+                    <td>{{ remboursement.motif }}</td>
+                    <td>{{ remboursement.statut }}</td>
+                    <td>{{ remboursement.montant }} EUR</td>
+                    <td>
+                        {% for billet in remboursement.remboursementBillets %}
+                            <span>Billet ID: {{ billet.id }} ({{ billet.billet.nom }})</span><br>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune demande de remboursement en cours.</p>
+    {% endif %}
+{% endblock %}

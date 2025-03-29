@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Remboursement Billets{% endblock %}
+
+{% block body %}
+    <h1>Vos Billets</h1>
+
+    {% if payerBillets is not empty %}
+        <table>
+            <thead>
+            <tr>
+                <th>Billet ID</th>
+                <th>Nom de l'acheteur</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Montant</th>
+                <th>Motif de remboursement</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for billet in payerBillets %}
+                <tr>
+                    <td>{{ billet.id }}</td>
+                    <td>{{ billet.user.nom }} {{ billet.user.prenom }}</td>
+                    <td>{{ billet.debutBillet|date('d/m/Y') }}</td>
+                    <td>{{ billet.finBillet|date('d/m/Y') }}</td>
+                    <td>{{ billet.billet.prixBillet }} EUR</td>
+                    <td>
+                        <!-- Formulaire pour la demande de remboursement -->
+                        <form action="{{ path('app_client_demande_remboursement_billet', {'id': billet.id}) }}" method="post">
+                            <input type="text" name="motif" placeholder="Motif du remboursement" required>
+                            <button type="submit">Demander un remboursement</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucun billet trouvé pour votre compte.</p>
+    {% endif %}
+{% endblock %}
