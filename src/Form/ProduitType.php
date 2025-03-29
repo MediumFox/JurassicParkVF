@@ -22,6 +22,7 @@ class ProduitType extends AbstractType
             ->add('libelleProduit', TextType::class, [
                 'attr'=>[
                     'placeholder'=>'Exemple : t-bag...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -31,12 +32,16 @@ class ProduitType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('imageProduit', FileType::class)
             ->add('descriptionProduit', TextareaType::class, [
                 'attr'=>[
-                    'placeholder'=>'...'
+                    'placeholder'=>'...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description est obligatoire']),
@@ -46,30 +51,47 @@ class ProduitType extends AbstractType
                         'minMessage' => 'La description doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'La description ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('stock', IntegerType::class, [
                 'attr'=>[
                     'placeholder'=> '10',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair',
                     'min'=>1,
                     'max'=>10000,
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le stock est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('disponibleAchat', CheckboxType::class, [
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
                 'mapped' => false,
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('prixProduit', NumberType::class, [
                 'attr'=>[
                     'placeholder'=> '10,99',
                     'min'=>0.10,
                     'max'=>10000,
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prix est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ]);
         ;
     }

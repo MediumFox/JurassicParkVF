@@ -28,7 +28,9 @@ final class HotelController extends AbstractController
                 'title'=> "L'index des hôtels",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'hôtel',
+            'formRoute' => $this->generateUrl('app_hotel_form')
         ]);
     }
 
@@ -76,14 +78,29 @@ final class HotelController extends AbstractController
     }
 
     #[Route('/edit/{id}', name: 'app_hotel_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Hotel $hotel, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $form = $this->createForm(HotelType::class, $hotel);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
+            $imageFile = $form->get('imageDinosaure')->getData();
 
+            if ($imageFile) {
+                if ($hotel->getImageHotel()) {
+                    $this->removeImg($hotel->getImageHotel(), 'Dinosaures');
+                }
+    
+                $imagePath = $this->uploadImg($imageFile, 'Dinosaures', $slugger);
+    
+                if ($imagePath === null) {
+                    return new JsonResponse(['success' => false, 'message' => 'Erreur lors de l\'upload de l\'image']);
+                }
+    
+                $hotel->setImageHotel($imagePath);
+            }
+    
+            $entityManager->flush();
             return new JsonResponse(['success' => true]);
         }
     
@@ -96,11 +113,34 @@ final class HotelController extends AbstractController
     #[Route('/{id}', name: 'app_hotel_delete', methods: ['POST'])]
     public function delete(Request $request, Hotel $hotel, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$hotel->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $hotel->getId(), $request->request->get('_token'))) {
             $entityManager->remove($hotel);
             $entityManager->flush();
         }
-
+    
+        $this->removeImg($hotel->getImageHotel(), 'Hotels');
         return $this->redirectToRoute('app_hotel_index', [], Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/filter-libelle-hotel', name: 'app_hotel_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, HotelRepository $hotelRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $hotel = $hotelRepository->filterName($libelle);
+
+        if (!$hotel) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('hotel/_hotel_cards.html.twig', [
+            'hotels' => $hotel,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
+    }
+
+
 }

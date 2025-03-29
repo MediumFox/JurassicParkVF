@@ -17,6 +17,7 @@ class JourType extends AbstractType
             ->add('libelleJour', TextType::class, [
                 'attr'=>[
                     'placeholder'=>'Exemple : Lundi-no...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -26,7 +27,10 @@ class JourType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
         ;
     }

@@ -21,6 +21,7 @@ class RestaurantType extends AbstractType
             ->add('libelleRestaurant', TextType::class, [
                 'attr'=>[
                     'placeholder'=>'Exemple : Ristourne...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -30,22 +31,42 @@ class RestaurantType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
-            ->add('imageRestaurant', FileType::class)
+            ->add('imageRestaurant', FileType::class, [             
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
+            ])
             ->add('nbTable', IntegerType::class, [
                 'attr'=>[
                     'placeholder'=> 'Exemple : 4',
                     'min'=>5,
                     'max'=>200,
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le nombre de tables est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('biome', EntityType::class, [
                 'class' => Biome::class,
-                'choice_label' => 'id',
+                'choice_label' => 'libelleBiome',
+                'attr'=>[
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
         ;
     }

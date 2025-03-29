@@ -24,7 +24,9 @@ final class FormatBilletController extends AbstractController
                 'title'=> "L'index des formats de billet",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'format de billet',
+            'formRoute' => $this->generateUrl('app_format_billet_form')
         ]);
     }
 
@@ -86,5 +88,25 @@ final class FormatBilletController extends AbstractController
         }
 
         return $this->redirectToRoute('app_format_billet_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-format-billet', name: 'app_format_billet_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, FormatBilletRepository $formatBilletRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $fBillets = $formatBilletRepository->filterName($libelle);
+
+        if (!$fBillets) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('format_billet/_format_billet_cards.html.twig', [
+            'format_billets' => $fBillets,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

@@ -1,0 +1,27 @@
+{% for hotel in hotels|slice(0, 16)  %}
+    <div class="overflow-hidden bg-white border-[1px] border-gray-300 rounded-lg">
+        <div class="relative">
+            <img src="{{asset(hotel.imageHotel)}}" alt="image {{ hotel.libelleHotel }}" class="max-h-[150px] min-h-[150px] w-full object-cover">
+            <span class="absolute bottom-1 left-1 px-2 py-1 text-xs bg-slate-900 rounded ml-1 mb-1 font-bold text-white">
+                {{ hotel.biome is not null ? hotel.biome.libelleBiome : 'Pas de biome défini' }}
+            </span>
+        </div>
+        <div class="px-3 pb-3 pt-2 relative">
+            <div class="flex justify-between">
+                <div class="flex flex-row items-center">
+                    <span class="font-bold text-center">{{ hotel.libelleHotel }}</span>
+                </div>
+            </div>
+
+            <div class="flex flex-col">
+                <span class="italic text-bleuGlace line-clamp-3 my-1.5">{{hotel.descriptionHotel}}</span>
+            </div>
+            <div class="flex justify-end gap-2 mt-2">
+                {{ include('hotel/_delete_form.html.twig') }}
+                    <span onClick="mettreAJourData({{hotel.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                    {{ include('svg/update-svg.html.twig') }}
+                <span/>
+            </div>
+        </div>
+    </div>
+{% endfor %}

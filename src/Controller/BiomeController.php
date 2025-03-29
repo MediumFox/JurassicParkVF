@@ -24,7 +24,9 @@ final class BiomeController extends AbstractController
                 'title'=> "L'index des biomes",
                 'description' => "Retrouvez-ici tous les biomes qui sont reliés aux restaurants, aux hôtels ainsi qu'aux enclos. Les suppresions peuvent avoir un fort impact sur le site, soyez prudent.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'biome',
+            'formRoute' => $this->generateUrl('app_biome_form')
         ]);
     }
 
@@ -87,5 +89,25 @@ final class BiomeController extends AbstractController
         }
 
         return $this->redirectToRoute('app_biome_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-biome', name: 'app_biome_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, BiomeRepository $biomeRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $biomes = $biomeRepository->filterName($libelle);
+
+        if (!$biomes) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('biome/_biome_cards.html.twig', [
+            'biomes' => $biomes,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

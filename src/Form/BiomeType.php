@@ -21,7 +21,7 @@ class BiomeType extends AbstractType
                     'placeholder' => 'Exemple : Toundra',
                     'maxlength' => 50,
                     'minlenght' => 3,
-                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -39,13 +39,13 @@ class BiomeType extends AbstractType
                     'placeholder'=> '...',
                     'minlenght'=> 25,
                     'maxlength' => 1000,
-                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair'
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
                     new Assert\Length([
                         'min' => 3,
-                        'max' => 50,
+                        'max' => 1000,
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])

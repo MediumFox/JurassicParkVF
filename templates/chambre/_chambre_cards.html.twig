@@ -1,0 +1,24 @@
+{% for chambre in chambres|slice(0, 16) %}
+    <div class="overflow-hidden border-[1px] bg-white border-gray-300 rounded-lg">
+        <div class="px-3 pb-3 pt-2 relative">
+            <div class="flex justify-between">
+                <span class="font-bold text-center">{{ chambre.numeroChambre }}</span>
+                <span><strong>Etage :</strong> {{chambre.etageChambre}}</span>
+            </div>
+
+            <div class="flex flex-row justify-between items-end">
+                <div class="mb-1">
+                    <span class="text-xs bg-slate-900 rounded p-1 font-bold text-white">
+                        {{ chambre.hotel is not null ? chambre.hotel.libelleHotel : "Pas d'hôtel défini" }}
+                    </span>
+                </div>
+                <div class="flex justify-end gap-2 mt-2">
+                    {{ include('chambre/_delete_form.html.twig') }}
+                    <span onClick="mettreAJourData({{chambre.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                        {{ include('svg/update-svg.html.twig') }}
+                    <span/>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

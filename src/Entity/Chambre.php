@@ -30,6 +30,10 @@ class Chambre
     #[ORM\ManyToOne(inversedBy: 'lesChambres')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Hotel $hotel = null;
+    
+    #[ORM\ManyToOne(inversedBy: 'chambres')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?FormatChambre $formatChambre = null;
 
     public function __construct()
     {
@@ -103,6 +107,18 @@ class Chambre
     public function setHotel(?Hotel $hotel): static
     {
         $this->hotel = $hotel;
+
+        return $this;
+    }
+
+    public function getFormatChambre(): ?FormatChambre
+    {
+        return $this->formatChambre;
+    }
+
+    public function setFormatChambre(?FormatChambre $formatChambre): static
+    {
+        $this->formatChambre = $formatChambre;
 
         return $this;
     }

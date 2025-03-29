@@ -19,6 +19,7 @@ class FormatChambreType extends AbstractType
             ->add('libelleFormatChambre', TextType::class, [
                 'attr'=>[
                     'placeholder'=>'Exemple : prenium...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le libellé est obligatoire']),
@@ -28,11 +29,16 @@ class FormatChambreType extends AbstractType
                         'minMessage' => 'Le libellé doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'Le libellé ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('descriptionFormatBillet', TextareaType::class, [
                 'attr'=>[
-                    'placeholder'=>'...'
+                    'placeholder'=>'...',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair mb-2.5'
+
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La description est obligatoire']),
@@ -42,17 +48,24 @@ class FormatChambreType extends AbstractType
                         'minMessage' => 'La description doit contenir au moins {{ limit }} caractères',
                         'maxMessage' => 'La description ne doit pas dépasser {{ limit }} caractères'
                     ])
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
             ->add('prixFormatChambre', NumberType::class, [
                 'attr'=>[
                     'placeholder'=> '10,99',
+                    'class'=>'border border-bleuGlace p-0.5 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair',
                     'min'=>'0.10',
                     'max'=>'10000',
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'Le prix est obligatoire']),
-                ]
+                ],
+                'label_attr' => [
+                    'class' => 'text-bleuLune font-semibold mb-1 block'
+                ],
             ])
         ;
     }

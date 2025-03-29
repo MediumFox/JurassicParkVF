@@ -24,7 +24,9 @@ final class HoraireController extends AbstractController
                 'title'=> "L'index des horaires",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'horaire',
+            'formRoute' => $this->generateUrl('app_horaire_form')
         ]);
     }
 

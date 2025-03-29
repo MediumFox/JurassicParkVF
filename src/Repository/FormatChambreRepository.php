@@ -15,6 +15,16 @@ class FormatChambreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, FormatChambre::class);
     }
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleFormatChambre like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     //    /**
     //     * @return FormatChambre[] Returns an array of FormatChambre objects

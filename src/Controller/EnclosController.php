@@ -24,7 +24,9 @@ final class EnclosController extends AbstractController
                 'title'=> "L'index des enclos",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'enclos',
+            'formRoute' => $this->generateUrl('app_enclos_form')
         ]);
     }
 
@@ -87,5 +89,25 @@ final class EnclosController extends AbstractController
         }
 
         return $this->redirectToRoute('app_enclos_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-enclos', name: 'app_enclos_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, EnclosRepository $enclosRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $enclos = $enclosRepository->filterName($libelle);
+
+        if (!$enclos) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('enclos/_enclos_cards.html.twig', [
+            'enclos' => $enclos,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }

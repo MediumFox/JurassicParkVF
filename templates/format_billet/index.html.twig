@@ -11,32 +11,15 @@
         <div class="w-[70%] mx-auto p-2">
             <div class="w-[100%] flex justify-end" onClick="ajouterData()">
                 <span class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm cursor-pointer">Créer un format de billet</span>
-            </div> 
+            </div>             
             <h1 class="font-bold text-2xl mb-3.5 underline">Les formats de billet</h1>
-            <div class="grid-cols-4 grid-rows-4 grid gap-7">
+            <div class="flex flex-col mb-2">
+                <label for='filterName' class="underline mb-1 text-bleuLune font-bold">Trier par libellé :</label>
+                <input type='text' oninput="filterName()" class="border border-bleuGlace p-0.5 w-[20vw] rounded focus:outline-none focus:ring-2 focus:ring-bleuClair" id='filterName'/>
+            </div>
+            <div class="grid-cols-4 grid-rows-4 grid gap-7" id="formatBilletContainer">
                 {% if format_billets is not empty %}
-                    {% for format_billet in format_billets|slice(0, 16)  %}
-                        <div class="overflow-hidden  border-[1px] bg-white border-gray-300 rounded-lg">
-                            <div class="px-3 pb-3 pt-2 relative">
-                                <div class="flex justify-between">
-                                    <div class="flex flex-row items-center">
-                                        <span class="font-bold text-center">{{ format_billet.libelleBillet }}</span>
-                                    </div>
-                                    <span>{{ format_billet.prixBillet }}€</span>
-                                </div>
-                                <div class="flex flex-col">
-                                    <span>{{format_billet.descriptionBillet}}</span>
-                                </div>
-        
-                                <div class="flex justify-end gap-2 mt-2">
-                                    {{ include('format_billet/_delete.html.twig') }}
-                                    <span onClick="mettreAJourData({{format_billet.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
-                                        {{ include('svg/update-svg.html.twig') }}
-                                    <span/>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
+                    {% include 'format_billet/_format_billet_cards.html.twig' %}
                 {% else %}
                     <span>Aucun format de billet trouvé</span>
                 {% endif %}
@@ -46,6 +29,27 @@
 </div>
 {% include 'reuse/display/addDisplay.html.twig' %}
 {% include 'reuse/display/updateDisplay.html.twig' %}
+    <script>
+        function filterName() {
+            const container = document.getElementById("formatBilletContainer");
+            const libelle = document.getElementById("filterName").value;
+            const url = "{{ path('app_format_billet_filter_name') }}?libelle=" + encodeURIComponent(libelle);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML = "<p class='text-red-500 text-sm'>Aucune format de billet trouvé.</p>";
+                        return;
+                    }
+                    container.innerHTML = data.html;
+                })
+                .catch(error => {
+                    console.error(error);
+                    container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
+                });
+        }
+    </script>
 {% endblock %}
 
 

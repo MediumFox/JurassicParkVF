@@ -1,0 +1,22 @@
+{% for format_billet in format_billets|slice(0, 16)  %}
+    <div class="overflow-hidden  border-[1px] bg-white border-gray-300 rounded-lg">
+        <div class="px-3 pb-3 pt-2 relative">
+            <div class="flex justify-between">
+                <div class="flex flex-row items-center">
+                    <span class="font-bold text-center">{{ format_billet.libelleBillet }}</span>
+                </div>
+                <span>{{ format_billet.prixBillet }}€</span>
+            </div>
+            <div class="flex flex-col">
+                <span class="italic text-bleuGlace line-clamp-3 my-1.5">{{format_billet.descriptionBillet}}</span>
+            </div>
+
+            <div class="flex justify-end gap-2 mt-2">
+                {{ include('format_billet/_delete_form.html.twig') }}
+                <span onClick="mettreAJourData({{format_billet.id}})"class="rounded bg-slate-900 p-1 hover:cursor-pointer flex items-center justify-center">
+                    {{ include('svg/update-svg.html.twig') }}
+                <span/>
+            </div>
+        </div>
+    </div>
+{% endfor %}

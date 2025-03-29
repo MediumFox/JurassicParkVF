@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Chambre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Query\Limit;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,21 +16,29 @@ class ChambreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Chambre::class);
     }
+    public function findChamberReservation($hotel, $chambre): ?Chambre
+    {
 
-    //    /**
-    //     * @return Chambre[] Returns an array of Chambre objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.hotel = :val1')
+            ->setParameter('val1', $hotel)
+            ->andWhere('c.formatChambre = :val2')
+            ->setParameter('val2', $chambre)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.numeroChambre like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     //    public function findOneBySomeField($value): ?Chambre
     //    {

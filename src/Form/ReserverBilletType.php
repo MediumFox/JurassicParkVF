@@ -39,6 +39,7 @@ class ReserverBilletType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'La date de début est obligatoire']),
                 ],
+                
             ])
 
         ;

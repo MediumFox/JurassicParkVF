@@ -6,7 +6,7 @@ use App\Entity\Biome;
 use App\Entity\Restaurant;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class RestaurantFixtures extends Fixture implements DependentFixtureInterface
@@ -21,11 +21,11 @@ class RestaurantFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager): void
     {
         $restaurants = [
-            ['Jurassic Grill', 'grill.jpg', 40],
-            ['Dino Dîner', 'diner.jpg', 30],
-            ['Volcan Pizza', 'pizza.jpg', 25],
-            ['Herbivore Café', 'cafe.jpg', 20],
-            ['T-Rex Snack', 'snack.jpg', 15],
+            ['Jurassic Grill', 'img/Restaurants/res1.jpg', 40],
+            ['Dino Dîner', 'img/Restaurants/res2.jpg', 30],
+            ['Volcan Pizza', 'img/Restaurants/res3.jpg', 20],
+            ['Herbivore Café', 'img/Restaurants/res4.jpg', 20],
+            ['T-Rex Snack', 'img/Restaurants/res5.jpg', 15],
         ];
 
         $biomes = $this->doctrine->getRepository(Biome::class)->findAll();

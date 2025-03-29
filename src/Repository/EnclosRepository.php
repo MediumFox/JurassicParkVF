@@ -16,6 +16,18 @@ class EnclosRepository extends ServiceEntityRepository
         parent::__construct($registry, Enclos::class);
     }
 
+    
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleEnclos like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Enclos[] Returns an array of Enclos objects
     //     */

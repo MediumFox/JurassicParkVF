@@ -16,6 +16,17 @@ class JourRepository extends ServiceEntityRepository
         parent::__construct($registry, Jour::class);
     }
 
+    public function filterName(string $value): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.libelleJour like :val')
+            ->setParameter('val', '%' . $value . '%')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Jour[] Returns an array of Jour objects
     //     */

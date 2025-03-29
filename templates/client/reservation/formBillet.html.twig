@@ -1,14 +1,15 @@
 {{ form_start(form, {'attr':{class:'w-[80%] mb-10'}}) }}
 <div class="w-full bors" id="displayBillet">
+    <input type='hidden' name="prixBillets" value="0" id="prixBillets"/>
     <div class="mb-5 w-full">
         <h1 class="text-2xl font-bold text-bleuLune mb-1">Réservation de vos billets</h1>
         <span class="block h-[2px] w-full bg-bleuLune"></span>
     </div>
     <div class="w-full">
         <div class="flex justify-between items-end w-[80%]">
-            {{ form_row(form.debutBillet) }}
+            {{ form_row(form.debutBillet, {'attr': {'value': data.debutBillet|default('')}}) }}
             <span>-</span>
-            {{ form_row(form.finBillet) }}
+            {{ form_row(form.finBillet, {'attr': {'value': data.finBillet|default('')}}) }}
         </div>
 
         <div class="w-[80%] mt-5" id="reserverBillet">
@@ -20,9 +21,45 @@
                 <span class="block h-[2px] bg-bleuLune"></span>
             </div>
         </div>
+        {% if data and data.prenoms is defined %}
+            {% for i in 0..(data.prenoms|length - 1) %}
+                <div class="flex justify-between w-[80%] gap-4 mt-3" id="personne_{{ i }}">
+                    <div class="flex gap-1.5">
+                        <div class="flex flex-col gap-2 mb-4">
+                            <label for="prenom_{{ i }}" class="text-bleuLune font-semibold">Prénom</label>
+                            <input type="text" name="prenom[]" id="prenom_{{ i }}"
+                                class="border border-bleuLune p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair"
+                                value="{{ data.prenoms[i] }}"
+                                required autofocus>
+                        </div>
+                        <div class="flex flex-col gap-2 mb-4">
+                            <label for="nom_{{ i }}" class="text-bleuLune font-semibold">Nom</label>
+                            <input type="text" name="nom[]" id="nom_{{ i }}"
+                                class="border border-bleuLune p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair"
+                                value="{{ data.noms[i] }}"
+                                required autofocus>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-10 justify-between">
+                        <select name="fBillet[]" class="select-billet border-bleuLune rounded border p-2">
+                            {% for billet in formatsBillet %}
+                                <option value="{{ billet.id }}"
+                                    data-price="{{ billet.prixBillet }}"
+                                    {% if billet.id == data.billets[i] %}selected{% endif %}>
+                                    {{ billet.libelleBillet }} - {{ billet.prixBillet }} €
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" class="rounded bg-red-700 p-1 hover:cursor-pointer delete-btn-personne" data-target="personne_{{ i }}">
+                            {{ include('svg/delete-svg.html.twig') }}
+                        </button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
         <span class="block h-[2px] w-[80%] bg-bleuLune mt-5"></span>
         <div class="w-[80%]">
-            <button id="btnValidateBillet" disabled type="button" class="mt-5 py-1 px-4 bg-slate-700 text-white rounded hover:bg-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200">
+            <button id="btnValidateBillet" disabled type="submit" class="mt-5 py-1 px-4 bg-slate-700 text-white rounded hover:bg-slate-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-300 transition duration-200">
                 Etape suivante
             </button>
         </div>
@@ -59,6 +96,7 @@
 
                 const price = parseFloat(selectedOption.getAttribute("data-price")) || 0;
                 totalPrice += price;
+                document.getElementById('prixBillets').value = totalPrice;
             });
             totalPriceElementB.innerText = `Prix total : ${totalPrice.toFixed(2)} €`;
         }
@@ -102,7 +140,7 @@
                 <div class="flex items-center gap-10 justify-between">
                     <select name="fBillet[]" class="select-billet border-bleuLune rounded border p-2">
                         {% for billet in formatsBillet %}
-                            <option value="{{ billet.idBillet }}" data-price="{{ billet.prixBillet }}">{{ billet.libelleBillet }} - {{ billet.prixBillet }} €</option>
+                            <option value="{{ billet.id }}" data-price="{{ billet.prixBillet }}">{{ billet.libelleBillet }} - {{ billet.prixBillet }} €</option>
                         {% endfor %}
                     </select>
                     <button type="button" class="rounded bg-red-700 p-1 hover:cursor-pointer delete-btn-personne" data-target="${uniqueId}">
@@ -155,15 +193,6 @@
             if (!finBillet || finBillet.value === "") {
                 isValid = false;
                 finBillet.classList.add("border-red-500");
-            }
-
-            if (isValid) {
-                displayBillet.style.display = "none";
-                displayHotel.style.display = "block";
-                headBillet.style.display = "none";
-                headHotel.style.display = "flex";
-            } else {
-                alert("Merci de remplir tous les champs avant de valider !");
             }
         });
 });

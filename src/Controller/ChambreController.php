@@ -24,7 +24,9 @@ final class ChambreController extends AbstractController
                 'title'=> "L'index des chambres",
                 'description' => "Lorem Ipsum.",
                 'enabled' => false,
-            ]
+            ],
+            'entity' => 'chambre',
+            'formRoute' => $this->generateUrl('app_chambre_form')
         ]);
     }
 
@@ -87,5 +89,25 @@ final class ChambreController extends AbstractController
         }
 
         return $this->redirectToRoute('app_chambre_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/filter-libelle-chambre', name: 'app_chambre_filter_name', methods: ['GET'])]
+    public function filterName(Request $request, ChambreRepository $chambreRepository): JsonResponse
+    {
+        $libelle = $request->query->get('libelle');
+        $chambres = $chambreRepository->filterName($libelle);
+
+        if (!$chambres) {
+            return new JsonResponse(['success' => false]);
+        }
+    
+        $html = $this->renderView('chambre/_chambre_cards.html.twig', [
+            'chambres' => $chambres,
+        ]);
+    
+        return new JsonResponse([
+            'success' => true,
+            'html' => $html
+        ]);
     }
 }
