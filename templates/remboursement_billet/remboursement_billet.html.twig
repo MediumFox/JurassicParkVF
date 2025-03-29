@@ -6,7 +6,7 @@
     <h1>Vos Billets</h1>
 
     {% if payerBillets is not empty %}
-        <table>
+        <table class="billets-table">
             <thead>
             <tr>
                 <th>Billet ID</th>
@@ -26,12 +26,14 @@
                     <td>{{ billet.debutBillet|date('d/m/Y') }}</td>
                     <td>{{ billet.finBillet|date('d/m/Y') }}</td>
                     <td>{{ billet.billet.prixBillet }} EUR</td>
-                    <td>
-                        <!-- Formulaire pour la demande de remboursement -->
+                    <td class="motif-cell" id="motif-{{ billet.id }}" style="display:none;">
                         <form action="{{ path('app_client_demande_remboursement_billet', {'id': billet.id}) }}" method="post">
                             <input type="text" name="motif" placeholder="Motif du remboursement" required>
-                            <button type="submit">Demander un remboursement</button>
+                            <button type="submit">Soumettre</button>
                         </form>
+                    </td>
+                    <td>
+                        <button class="toggle-motif" data-id="{{ billet.id }}">Demander un remboursement</button>
                     </td>
                 </tr>
             {% endfor %}
@@ -40,4 +42,81 @@
     {% else %}
         <p>Aucun billet trouvé pour votre compte.</p>
     {% endif %}
+
+    <style>
+        .billets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .billets-table th, .billets-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .billets-table th {
+            background-color: #f4f4f4;
+        }
+
+        .billets-table td {
+            background-color: #fff;
+        }
+
+        .motif-cell {
+            display: none;
+        }
+
+        .toggle-motif {
+            padding: 6px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .toggle-motif:hover {
+            background-color: #0056b3;
+        }
+
+        form input, form button {
+            padding: 8px;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+    </style>
+
+    <script>
+        // JavaScript pour afficher le champ de motif de remboursement au clic sur le bouton
+        document.querySelectorAll('.toggle-motif').forEach(button => {
+            button.addEventListener('click', function() {
+                const billetId = this.getAttribute('data-id');
+                const motifCell = document.getElementById('motif-' + billetId);
+
+                // Toggle the visibility of the motif input
+                if (motifCell.style.display === 'none' || motifCell.style.display === '') {
+                    motifCell.style.display = 'table-cell';
+                    this.textContent = 'Annuler la demande';
+                } else {
+                    motifCell.style.display = 'none';
+                    this.textContent = 'Demander un remboursement';
+                }
+            });
+        });
+    </script>
+
 {% endblock %}

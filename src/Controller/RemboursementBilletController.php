@@ -3,10 +3,15 @@
 // src/Controller/RemboursementBilletController.php
 namespace App\Controller;
 
+use App\Entity\PayerBillet;  // Corrigez l'importation ici
+use App\Entity\Remboursement;
+use App\Entity\RemboursementBillet;
 use App\Repository\PayerBilletRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\ORM\EntityManagerInterface;
 
 class RemboursementBilletController extends AbstractController
 {
@@ -23,14 +28,15 @@ class RemboursementBilletController extends AbstractController
         $payerBillets = $payerBilletRepository->findBy(['user' => $client]);
 
         return $this->render('remboursement_billet/remboursement_billet.html.twig', [
-            'payerBillets' => $payerBillets, // Liste des billets achetés
+            'payerBillets' => $payerBillets,
         ]);
     }
-    // Nouvelle méthode pour gérer la demande de remboursement
+
     #[Route("/client/remboursement/{id}", name: "app_client_demande_remboursement_billet", methods: ["POST"])]
+    // src/Controller/RemboursementBilletController.php
+
     public function demanderRemboursement(PayerBillet $payerBillet, Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Assurez-vous que l'utilisateur connecté est le propriétaire du billet
         $client = $this->getUser();
         if (!$client || $payerBillet->getUser() !== $client) {
             throw $this->createAccessDeniedException('Vous n\'avez pas l\'autorisation de demander un remboursement pour ce billet.');
@@ -38,14 +44,34 @@ class RemboursementBilletController extends AbstractController
 
         // Traitement de la demande de remboursement
         $motif = $request->request->get('motif');
+        $montant = $payerBillet->getBillet()->getPrixBillet();  // Utiliser le montant du billet
 
-        // Vous pouvez ici ajouter la logique pour enregistrer le motif de remboursement ou d'autres actions liées
-        // Par exemple, enregistrer une entité "DemandeRemboursement" associée à ce billet
+        // Création d'un objet Remboursement
+        $remboursement = new Remboursement();
+        $remboursement->setClient($client);
+        $remboursement->setDateDemande(new \DateTime()); // La date de la demande
+        $remboursement->setStatut('en cours'); // Par défaut, le statut est "en cours"
+        $remboursement->setMotif($motif);
+        $remboursement->setMontant($montant);
+        $remboursement->setBillet($payerBillet);
 
-        // Pour l'instant, on va juste afficher un message de succès
+        // Lier ce remboursement à un billet
+        // Assurez-vous que c'est bien un PayerBillet et pas un FormatBillet
+        $remboursementBillet = new RemboursementBillet();
+        $remboursementBillet->setRemboursement($remboursement);
+        $remboursementBillet->setBillet($payerBillet);  // Assurez-vous de passer PayerBillet, pas FormatBillet
+        // Vous pouvez ajouter d'autres propriétés au besoin
+
+        // Ajouter le remboursement à l'entité Remboursement
+        $remboursement->addRemboursementBillet($remboursementBillet);
+
+        // Sauvegarder la demande de remboursement dans la base de données
+        $entityManager->persist($remboursement);
+        $entityManager->persist($remboursementBillet);
+        $entityManager->flush();
+
         $this->addFlash('success', 'Demande de remboursement envoyée avec succès.');
 
-        // Rediriger vers la page d'index (la liste des billets)
         return $this->redirectToRoute('app_client_remboursement_billet');
     }
 }

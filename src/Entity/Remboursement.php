@@ -20,6 +20,11 @@ class Remboursement
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 
+    #[ORM\ManyToOne(targetEntity: PayerBillet::class, inversedBy: 'remboursements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?PayerBillet $billet = null;
+
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateDemande = null;
 
@@ -172,6 +177,17 @@ class Remboursement
     {
         $this->montant = $montant;
 
+        return $this;
+    }
+
+    public function getBillet(): ?PayerBillet
+    {
+        return $this->billet;
+    }
+
+    public function setBillet(?PayerBillet $billet): self
+    {
+        $this->billet = $billet;
         return $this;
     }
 }
