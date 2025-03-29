@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block body %}
+    <h1>Bienvenue {{ client.nom }} {{ client.prenom }}</h1>
+
+    <h2>Informations sur votre profil :</h2>
+    <ul>
+        <li><strong>Email :</strong> {{ client.email }}</li>
+        <li><strong>Nom :</strong> {{ client.nom }}</li>
+        <li><strong>Prénom :</strong> {{ client.prenom }}</li>
+        <!-- Ajoutez d'autres informations pertinentes sur le client -->
+    </ul>
+
+    <h3>Vos Liens :</h3>
+    <ul>
+        <li><a href="{{ links.remboursement }}">Remboursement</a></li>
+        <li><a href="{{ links.achat }}">Achat</a></li>
+        <li><a href="{{ links.remboursement_billet }}">Remboursement Billet</a></li>
+    </ul>
+{% endblock %}

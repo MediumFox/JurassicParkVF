@@ -2,275 +2,70 @@
 
 namespace App\Controller;
 
-use App\Entity\ReserverRestaurant;
-use App\Repository\ChambreRepository;
-use DateTime;
-use App\Entity\Date;
 use App\Entity\Client;
-use App\Form\ClientType;
-use App\Entity\LouerHotel;
-use App\Entity\PayerBillet;
-use App\Form\LouerHotelType;
-use App\Form\ReserverBilletType;
-use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
-use App\Repository\RestaurantRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Repository\FormatBilletRepository;
-use App\Repository\FormatChambreRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/client')]
 final class ClientController extends AbstractController
 {
-    #[Route(name: 'app_client_index', methods: ['GET'])]
-    public function index(ClientRepository $clientRepository): Response
+    // Votre code existant ici ...
+
+    // Route vers le profil du client avec les liens vers les autres pages
+    #[Route('/profile', name: 'app_client_profile', methods: ['GET'])]
+    public function profile(ClientRepository $clientRepository): Response
     {
-        return $this->render('client/index.html.twig', [
-            'clients' => $clientRepository->findAll(),
-        ]);
-    }
+        // Récupérer l'utilisateur actuellement connecté (client)
+        $client = $this->getUser(); // On suppose que le client est l'utilisateur authentifié
 
-    #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
-    public function show(Client $client): Response
-    {
-        return $this->render('client/show.html.twig', [
-            'client' => $client,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_client_delete', methods: ['POST'])]
-    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($client);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/reserver-aventure/billet', name: 'app_client_payer', methods: ['POST', 'GET'])]
-    public function reserverBillet(Request $request, FormatBilletRepository $formatBilletRepository): Response
-    {
-        $payerBillet = new PayerBillet();
-        $form = $this->createForm(ReserverBilletType::class, $payerBillet);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $prenoms = $request->request->all('prenom');
-            $noms = $request->request->all('nom');
-            $fBillets = $request->request->all('fBillet');
-            $prixBillets = $request->request->get('prixBillets');
-            $request->getSession()->remove('payer_billet_data');
-            $request->getSession()->set('payer_billet_data', [
-                'form' => $payerBillet,
-                'prenoms' => $prenoms,
-                'noms' => $noms,
-                'billets' => $fBillets
-            ]);
-            $request->getSession()->set('prixBillet', $prixBillets);
-            return $this->redirectToRoute('app_client_louer');
-        }
-        $data = null;
-        if ($request->getSession()->get('payer_billet_data')) {
-            $sessionData = $request->getSession()->get('payer_billet_data');
-            $formData = $sessionData['form'];
-        
-            $data = [
-                'debutBillet' => $formData->getDebutBillet()?->format('Y-m-d'),
-                'finBillet' => $formData->getFinBillet()?->format('Y-m-d'),
-                'prenoms' => $sessionData['prenoms'],
-                'noms' => $sessionData['noms'],
-                'billets' => $sessionData['billets']
-            ];
-        }        
-
-        return $this->render('client/reserver-aventure.html.twig', [
-            'form' => $form->createView(),
-            'type' => 'billet',
-            'formatsBillet'=> $formatBilletRepository->findAll(),
-            'hero'=> [
-                'title'=> "Réserver votre aventure",
-                'description' => "Lorem Ipsum.",
-                'enabled' => false,
-            ],
-            'data'=>$data
-        ]);
-    }
-
-    #[Route('/reserver-aventure/hotel', name: 'app_client_louer', methods: ['POST', 'GET'])]
-    public function louerHotel(Request $request, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
-    {
-        if(!$request->getSession()->get('payer_billet_data')){
+        if (!$client) {
+            // Si le client n'est pas connecté, rediriger vers la page d'accueil ou une page de connexion
             return $this->redirectToRoute('app_user_accueil');
         }
 
-        if ($request->isMethod('POST')) {
-            $hotelId = $request->request->get('choixHotel');
-            $formatId = $request->request->all('fChambre');
-    
-            $data = [
-                'hotel_id' => $hotelId,
-                'format_chambre_id' => $formatId,
-            ];
-            $request->getSession()->remove('louer_hotel_data');
-            $request->getSession()->set('louer_hotel_data', $data);
-            return $this->redirectToRoute('app_client_reserver');
-        }
+        // Vous pouvez aussi récupérer des informations supplémentaires sur le client depuis la base de données si nécessaire
+        // $client = $clientRepository->find($client->getId());
 
-        $data = null;
-        if ($request->getSession()->get('louer_hotel_data')) {
-            $sessionData = $request->getSession()->get('louer_hotel_data');
-        
-            $data = [
-                'hotel_id' => $sessionData['hotel_id'],
-                'fChambres' => $sessionData['format_chambre_id']
-            ];
-        }      
-    
-        $prixBillet = $request->getSession()->get('prixBillet');
-        return $this->render('client/reserver-aventure.html.twig', [
-            'type' => 'hotel',
-            'hotels'=> $hotelRepository->findAll(),
-            'formatChambre'=> $formatChambreRepository->findAll(),
-            'hero'=> [
-                'title'=> "Réserver votre aventure",
-                'description' => "Restaurants.",
-                'enabled' => false,
-            ],
-            'prixBillet'=>$prixBillet,
-            'data'=>$data
+        return $this->render('client/profile.html.twig', [
+            'client' => $client,
+            'links' => [
+                'remboursement' => $this->generateUrl('app_client_remboursement'),
+                'achat' => $this->generateUrl('app_client_achat'),
+                'remboursement_billet' => $this->generateUrl('app_client_remboursement_billet'),
+            ]
         ]);
     }
 
-    #[Route('/reserver-aventure/restaurant', name: 'app_client_reserver', methods: ['POST', 'GET'])]
-    public function reserverRestaurant(Request $request, RestaurantRepository $restaurantRepository): Response
+    // Route vers /client/remboursement
+    #[Route('/remboursement', name: 'app_client_remboursement', methods: ['GET'])]
+    public function remboursement(): Response
     {
-        if(!$request->getSession()->get('payer_billet_data') && !$request->getSession()->get('louer_hotel_data')){
-            return $this->redirectToRoute('app_client_payer');
-        }
+        // Cette méthode pourrait récupérer des informations sur les remboursements du client
+        // Retourner une vue avec les informations sur les remboursements
 
-        if ($request->isMethod('POST')) {
-            $choixRes = $request->request->get('choixRes');
-
- 
-            if($choixRes != "non"){
-                $dateReservation = $request->request->get('dateReservation');
-                $choixRestaurant = $request->request->get('choixRestaurant');
-                $data = [
-                    'dateReservation' => $dateReservation,
-                    'choixRestaurant' => $choixRestaurant,
-                ];
-                $request->getSession()->remove('reserver_restaurant_data');
-                $request->getSession()->set('reserver_restaurant_data', $data);
-            }
-
-            $request->getSession()->set('choixRes', $choixRes);
-            return $this->redirectToRoute('app_client_insert');
-        }
-        $data = null;
-        if ($request->getSession()->get('reserver_restaurant_data')) {
-            $sessionData = $request->getSession()->get('reserver_restaurant_data');
-            $choixRes = $request->getSession()->get('choixRes');
-            $data = [
-                'choixRes' => $choixRes,
-                'choixRestaurant' => $sessionData['choixRestaurant'],
-                'dateReservation' => $sessionData['dateReservation']
-            ];
-        }      
-        return $this->render('client/reserver-aventure.html.twig', [
-            'type' => 'restaurant',
-            'restaurants'=> $restaurantRepository->findAll(),
-            'hero'=> [
-                'title'=> "Réserver votre aventure",
-                'description' => "Hotels.",
-                'enabled' => false,
-            ],
-            'data'=> $data
-        ]);
+        return $this->render('client/remboursement.html.twig');
     }
 
-    #[Route('/reserver-aventure/insert', name: 'app_client_insert', methods: ['POST', 'GET'])]
-    public function insertDataReservation(Request $request, ChambreRepository $chambreRepository,RestaurantRepository $restaurantRepository,EntityManagerInterface $entityManager,FormatBilletRepository $formatBilletRepository, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
+    // Route vers /client/achat
+    #[Route('/achat', name: 'app_client_achat', methods: ['GET'])]
+    public function achat(): Response
     {
-        if(!$request->getSession()->get('payer_billet_data') && !$request->getSession()->get('louer_hotel_data') && !$request->getSession()->get('reserver_restaurant_data')){
-            return $this->redirectToRoute('app_client_payer');
-        }
-        $client = $this->getUser();
-        $payerBilletData = $request->getSession()->get('payer_billet_data');
-        $prenoms = $payerBilletData['prenoms'];
-        $noms = $payerBilletData['noms'];
-        $billets = $payerBilletData['billets'];
+        // Cette méthode pourrait récupérer les informations d'achats du client
+        // Retourner une vue avec les informations sur les achats
 
-        $debutBillet = $payerBilletData['form']->getDebutBillet();
-        $finBillet = $payerBilletData['form']->getFinBillet();
-        
-        $created = new DateTime();
-        $date = new Date();
-        $date->setDate($created);
-        $entityManager->persist($date);
-        $entityManager->flush();
+        return $this->render('client/achat.html.twig');
+    }
 
-        foreach ($prenoms as $key => $value) {
-            $unBillet = $formatBilletRepository->find($billets[$key]);
+    // Route vers /client/remboursementBillet
+    #[Route('/remboursement-billet', name: 'app_client_remboursement_billet', methods: ['GET'])]
+    public function remboursementBillet(): Response
+    {
+        // Cette méthode pourrait récupérer des informations sur les remboursements des billets
+        // Retourner une vue avec les informations sur les remboursements de billets
 
-            $payerBillet = new PayerBillet();
-            $payerBillet->setUser($client);
-            $payerBillet->setDebutBillet($debutBillet);
-            $payerBillet->setFinBillet($finBillet);
-            $payerBillet->setNom($noms[$key]);
-            $payerBillet->setPrenom($value);
-            $payerBillet->setBillet($unBillet);
-            $payerBillet->setDate($date);
-
-            $entityManager->persist($payerBillet);
-        }
-
-        $louerHotelData = $request->getSession()->get('louer_hotel_data');
-        $hotelId = $louerHotelData['hotel_id'];
-        $formatChambre = $louerHotelData['format_chambre_id'];
-
-        $hotel = $hotelRepository->find($hotelId);
-
-        foreach ($formatChambre as $key => $value) {
-            $chambre = $formatChambreRepository->find($value);
-            $uneChambre =  $chambreRepository->findChamberReservation($hotel, $chambre);
-            $louerHotel = new LouerHotel();
-            $louerHotel->setUser($client);
-            $louerHotel->setDate($date);
-            $louerHotel->setDebutLocation($debutBillet);
-            $louerHotel->setFinLocation($finBillet);
-            $louerHotel->setChambre($uneChambre);
-
-            $entityManager->persist($louerHotel);
-        }
-
-        $choixRes = $request->getSession()->get('choixRes');
-        $reserverRestaurantData = $request->getSession()->get('reserver_restaurant_data');
-        if($choixRes == "oui"){
-            $restaurantId = $reserverRestaurantData['choixRestaurant'];
-            $dateReservationStr = $reserverRestaurantData['dateReservation'];
-            $dateReservation = DateTime::createFromFormat('Y-m-d\TH:i', $dateReservationStr);
-
-            $restaurant = $restaurantRepository->find($restaurantId);
-            $reserverRestaurant = new ReserverRestaurant();
-            $reserverRestaurant->setClient($client);
-            $reserverRestaurant->setDate($date);
-            $reserverRestaurant->setRestaurant($restaurant);
-            $reserverRestaurant->setDateReservation($dateReservation);
-            $reserverRestaurant->setNbPersonne(count($prenoms));
-            $reserverRestaurant->setPresent(false);
-            $entityManager->persist($reserverRestaurant);
-        }
-
-        
-        $entityManager->flush();
-        $request->getSession()->remove('payer_billet_data');
-        $request->getSession()->remove('louer_hotel_data');
-        $request->getSession()->remove('reserver_restaurant_data');
-        return $this->redirectToRoute('app_user_accueil');
+        return $this->render('client/remboursement_billet.html.twig');
     }
 }
