@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ReserverRestaurant;
 use App\Repository\ChambreRepository;
+use App\Utils\TraitEmailFormat;
 use DateTime;
 use App\Entity\Date;
 use App\Entity\Client;
@@ -20,12 +21,15 @@ use App\Repository\FormatBilletRepository;
 use App\Repository\FormatChambreRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/client')]
 final class ClientController extends AbstractController
 {
+    use TraitEmailFormat;
+
     #[Route(name: 'app_client_index', methods: ['GET'])]
     public function index(ClientRepository $clientRepository): Response
     {
@@ -111,10 +115,11 @@ final class ClientController extends AbstractController
         if ($request->isMethod('POST')) {
             $hotelId = $request->request->get('choixHotel');
             $formatId = $request->request->all('fChambre');
-    
+            $prixTotal = $request->request->get('prixTotal');
             $data = [
                 'hotel_id' => $hotelId,
                 'format_chambre_id' => $formatId,
+                'prixTotal'=> $prixTotal
             ];
             $request->getSession()->remove('louer_hotel_data');
             $request->getSession()->set('louer_hotel_data', $data);
@@ -155,7 +160,6 @@ final class ClientController extends AbstractController
 
         if ($request->isMethod('POST')) {
             $choixRes = $request->request->get('choixRes');
-
  
             if($choixRes != "non"){
                 $dateReservation = $request->request->get('dateReservation');
@@ -169,7 +173,7 @@ final class ClientController extends AbstractController
             }
 
             $request->getSession()->set('choixRes', $choixRes);
-            return $this->redirectToRoute('app_client_insert');
+            return $this->redirectToRoute('app_client_recapitulatif');
         }
         $data = null;
         if ($request->getSession()->get('reserver_restaurant_data')) {
@@ -193,8 +197,40 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    #[Route('/reserver-aventure/recapitulatif', name: 'app_client_recapitulatif', methods: ['GET'])]
+    public function recapitulatifCommande(Request $request,RestaurantRepository $restaurantRepository,FormatBilletRepository $formatBilletRepository, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
+    {
+        if(!$request->getSession()->get('payer_billet_data') && !$request->getSession()->get('louer_hotel_data') && !$request->getSession()->get('reserver_restaurant_data')){
+            return $this->redirectToRoute('app_client_payer');
+        }
+
+        $lesFormatsBillets = $formatBilletRepository->findAll();
+        $lesHotels = $hotelRepository->findAll();
+        $lesFormatsChambres = $formatChambreRepository->findAll();
+        $lesRestaurants = $restaurantRepository->findAll();
+
+        $billets = $request->getSession()->get('payer_billet_data');
+        $hotel = $request->getSession()->get('louer_hotel_data');
+        $restaurant = $request->getSession()->get('reserver_restaurant_data');
+        return $this->render('client/reserver-aventure.html.twig', [
+            'type' => 'récapitulatif',
+            'hero'=> [
+                'title'=> "Réserver votre aventure",
+                'description' => "Voici le récapitulatif de votre commande",
+                'enabled' => false,
+            ],
+            'billets'=> $billets,
+            'hotel'=> $hotel,
+            'restaurant'=>$restaurant,
+            'formats'=>$lesFormatsBillets,
+            'lesHotels' => $lesHotels,
+            'lesFormatsChambres' => $lesFormatsChambres,
+            'lesRestaurants'=>$lesRestaurants,
+        ]);
+    }
+
     #[Route('/reserver-aventure/insert', name: 'app_client_insert', methods: ['POST', 'GET'])]
-    public function insertDataReservation(Request $request, ChambreRepository $chambreRepository,RestaurantRepository $restaurantRepository,EntityManagerInterface $entityManager,FormatBilletRepository $formatBilletRepository, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
+    public function insertDataReservation(MailerInterface $mailerInterface,Request $request, ChambreRepository $chambreRepository,RestaurantRepository $restaurantRepository,EntityManagerInterface $entityManager,FormatBilletRepository $formatBilletRepository, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
     {
         if(!$request->getSession()->get('payer_billet_data') && !$request->getSession()->get('louer_hotel_data') && !$request->getSession()->get('reserver_restaurant_data')){
             return $this->redirectToRoute('app_client_payer');
@@ -266,8 +302,9 @@ final class ClientController extends AbstractController
             $entityManager->persist($reserverRestaurant);
         }
 
-        
         $entityManager->flush();
+
+        $this->sendMailRecapitulatif($client->getEmail(), $mailerInterface);
         $request->getSession()->remove('payer_billet_data');
         $request->getSession()->remove('louer_hotel_data');
         $request->getSession()->remove('reserver_restaurant_data');

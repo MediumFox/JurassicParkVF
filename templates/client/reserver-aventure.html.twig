@@ -10,8 +10,10 @@
             {% include 'client/reservation/formBillet.html.twig' %}
         {% elseif type == "hotel" %}
             {% include 'client/reservation/formHotel.html.twig' %}
-        {% else %}
+        {% elseif type == "restaurant" %}
             {% include 'client/reservation/formRestaurant.html.twig' %}
+        {% else %}
+            {% include 'client/reservation/recapitulatif_commande.html.twig' %}
         {% endif %}
     </div>
 

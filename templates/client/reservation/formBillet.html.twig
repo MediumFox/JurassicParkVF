@@ -1,6 +1,7 @@
 {{ form_start(form, {'attr':{class:'w-[80%] mb-10'}}) }}
 <div class="w-full bors" id="displayBillet">
     <input type='hidden' name="prixBillets" value="0" id="prixBillets"/>
+    <input type='hidden' name="lengthValue" value="{{data ? data.prenoms|length : 0}}" id="lengthValue"/>
     <div class="mb-5 w-full">
         <h1 class="text-2xl font-bold text-bleuLune mb-1">Réservation de vos billets</h1>
         <span class="block h-[2px] w-full bg-bleuLune"></span>
@@ -73,9 +74,17 @@
         const addButton = document.getElementById("btnAddPersonne");
         const reserverBilletDiv = document.getElementById("reserverBillet");
         const validateButton = document.getElementById("btnValidateBillet");
-
+        const lengthValue = document.getElementById("lengthValue");
         const debutBillet = document.getElementById("reserver_billet_debutBillet");
         const finBillet = document.getElementById("reserver_billet_finBillet");
+        let addPersonne = 0;
+        if(lengthValue.value != 0){
+            validateButton.disabled = false;
+            validateButton.style.opacity = 1;
+            addPersonne = lengthValue.value;
+        }else{
+            validateButton.style.opacity = 0.5;
+        }
 
         const totalPriceElementB = document.createElement("div"); 
         totalPriceElementB.classList.add("text-xl", "font-bold", "mt-5");
@@ -87,12 +96,13 @@
                 finBillet.value = '';
             }
         });
-
+        let totalPrice = 0;
+        updateTotalPrice();
         function updateTotalPrice() {
-            let totalPrice = 0;
+            totalPrice = 0;
             document.querySelectorAll(".select-billet").forEach(select => {
                 const selectedOption = select.options[select.selectedIndex];
-                if (!selectedOption) return; // sécurise contre null/undefined
+                if (!selectedOption) return; 
 
                 const price = parseFloat(selectedOption.getAttribute("data-price")) || 0;
                 totalPrice += price;
@@ -110,8 +120,8 @@
             }
         }
 
-        let addPersonne = 0;
-        validateButton.style.opacity = 0.5;
+  
+    
         addButton.addEventListener("click", function () {
             const newFields = document.createElement("div");
             newFields.classList.add("flex", "justify-between", "gap-4", "mt-3");
@@ -176,6 +186,7 @@
 
         validateButton.addEventListener("click", function () {
             let isValid = true;
+            document.getElementById('prixBillets').value = totalPrice;
             document.querySelectorAll("#reserverBillet input, #reserverBillet select").forEach(input => {
                 if (!input.value.trim()) {
                     isValid = false;

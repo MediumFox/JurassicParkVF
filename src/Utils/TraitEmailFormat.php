@@ -22,4 +22,37 @@ trait TraitEmailFormat
             return false;
         }
     }
+
+    
+    public function sendMailResetPwd(string $toEmail, string $token, MailerInterface $mailer): bool
+    {
+        $email = (new Email())
+            ->from('no-reply@mon-site.com')
+            ->to($toEmail)
+            ->subject('Réinitialisation de votre mot de passe')
+            ->text("Voici le lien de réinitialisation : $token");
+
+        try {
+            $mailer->send($email);
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public function sendMailRecapitulatif(string $toEmail, MailerInterface $mailer): bool
+    {
+        $email = (new Email())
+            ->from('no-reply@mon-site.com')
+            ->to($toEmail)
+            ->subject('Confirmation de votre commande')
+            ->text("Votre commande a bien été passé.");
+
+        try {
+            $mailer->send($email);
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 }

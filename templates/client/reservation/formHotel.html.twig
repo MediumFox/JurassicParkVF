@@ -1,5 +1,7 @@
 <form class="w-[80%] mb-10" method="post">
     <input type="hidden" value="{{prixBillet}}" id="prix-billet">
+    <input type="hidden" value="0" id="prixTotal" name="prixTotal">
+    <input type='hidden' name="lengthValue" value="{{data ? data.fChambres|length : 0}}" id="lengthValue"/>
     <div class="w-full bors" id="displayBillet">
         <div class="mb-5 w-full">
             <h1 class="text-2xl font-bold text-bleuLune mb-1">Réservation de votre hôtel</h1>
@@ -73,43 +75,52 @@
     </div>
 </form>
 
-<script>document.addEventListener("DOMContentLoaded", function () {
-    window.selectHotel = function (id) {
-        const radio = document.querySelector(`input[name="choixHotel"][value="${id}"]`);
-        if (radio) {
-            radio.checked = true;
-        }
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+        window.selectHotel = function (id) {
+            const radio = document.querySelector(`input[name="choixHotel"][value="${id}"]`);
+            if (radio) {
+                radio.checked = true;
+            }
 
-        document.querySelectorAll('.card-hotel').forEach(card => {
-            card.classList.remove('border-2', 'border-bleuClair', 'shadow-md');
-        });
+            document.querySelectorAll('.card-hotel').forEach(card => {
+                card.classList.remove('border-2', 'border-bleuClair', 'shadow-md');
+            });
 
-        const selectedCard = radio.closest('.card-hotel');
-        if (selectedCard) {
-            selectedCard.classList.add('border-2', 'border-bleuClair', 'shadow-md');
-        }
-    };
+            const selectedCard = radio.closest('.card-hotel');
+            if (selectedCard) {
+                selectedCard.classList.add('border-2', 'border-bleuClair', 'shadow-md');
+            }
+        };
 
-    const addButton = document.getElementById("btnAddPersonne");
+        const prixTotal = document.getElementById("prixTotal");
+        const addButton = document.getElementById("btnAddPersonne");
         const addChambre = document.getElementById("btnAddChambre");
         const lesChambres = document.getElementById("lesChambres");
         const retourEtapeBillet = document.getElementById("retourEtapeBillet");
         const submitHotelSvt = document.getElementById("submitHotelSvt");
-
+        const lengthValue = document.getElementById("lengthValue");
         const totalPriceElementH = document.createElement("div"); 
         totalPriceElementH.classList.add("text-xl", "font-bold", "mt-5");
         lesChambres.appendChild(totalPriceElementH);
-
+        let nbChambres = 0;
+        if(lengthValue.value != 0){
+            submitHotelSvt.disabled = false;
+            submitHotelSvt.style.opacity = 1;
+            nbChambres = lengthValue.value;
+        }else{
+            submitHotelSvt.style.opacity = 0.5;
+        }
+        let totalPrice = 0;
+        updateTotalPrice();
         function updateTotalPrice() {
-            let totalPrice = parseFloat(document.getElementById('prix-billet').value) || 0;
+            totalPrice = parseFloat(document.getElementById('prix-billet').value) || 0; 
             document.querySelectorAll(".select-format").forEach(select => {
                 totalPrice += parseFloat(select.options[select.selectedIndex].dataset.price || 0);
             });
             totalPriceElementH.innerText = `Prix total de la réservation : ${totalPrice.toFixed(2)} €`;
         }
 
-        submitHotelSvt.style.opacity = 0.5;
-        let nbChambres = 0;
         addChambre.addEventListener("click", function () {
             const newFields = document.createElement("div");
             newFields.classList.add("flex", "justify-between", "gap-4", "mt-3");
@@ -156,7 +167,7 @@
 
         submitHotelSvt.addEventListener("click", function () {
             let formIsValid = true;
-            
+            prixTotal.value = totalPrice;
             const hotelRadios = document.getElementsByName("choixHotel");
             let hotelSelected = false;
             hotelRadios.forEach(radio => {

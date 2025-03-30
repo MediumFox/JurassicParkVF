@@ -33,7 +33,8 @@
                         <label for="password" class="text-bleuLune font-semibold">Mot de passe</label>
                         <input type="password" name="password" id="password" 
                                class="border border-bleuGlace p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-bleuClair" 
-                               autocomplete="current-password" required>
+                               autocomplete="current-password" required/>
+                        <a class="text-bleuGlace decoration-0 text-right italic hover:underline" href="/mot-de-passe-oublie">Mot de passé oublié ?</a>
                     </div>
 
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">

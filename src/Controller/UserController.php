@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
 use App\Repository\HotelRepository;
+use App\Repository\UserRepository;
+use App\Utils\TraitEmailFormat;
+
 use Symfony\Component\Mime\Email;
 use App\Repository\DinosaureRepository;
 use App\Repository\RestaurantRepository;
@@ -12,17 +15,21 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 
 final class UserController extends AbstractController
 {   
     private HotelRepository $hotelRepository;
     private RestaurantRepository $restaurantRepository;
+
+    use TraitEmailFormat;
     public function __construct(HotelRepository $hotelRepository, RestaurantRepository $restaurantRepository)
     {
         $this->hotelRepository = $hotelRepository;
@@ -122,5 +129,55 @@ final class UserController extends AbstractController
         $restaurants = $this->restaurantRepository->findAll();
         shuffle($restaurants);
         return array_slice($restaurants, 0, $count);
+    }
+
+    #[Route('/mot-de-passe-oublie', name: 'app_dinopedia', methods: ['GET','POST'])]
+    public function motDePasseOublie(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, MailerInterface $mailerInterface): Response
+    {
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $user = $userRepository->findOneBy(['email' => $email]);
+        
+            if ($user) {
+                $token = bin2hex(random_bytes(32));
+                $user->setResetToken($token);
+                $user->setResetTokenExpiration(new \DateTime('+1 hour'));
+        
+                $entityManager->flush();
+        
+                $resetLink = $this->generateUrl('app_reset_password', [
+                    'token' => $token,
+                ], UrlGeneratorInterface::ABSOLUTE_URL);
+                $this->sendMailResetPwd($email, $resetLink, $mailerInterface);
+            }
+        }
+        return $this->render('security/forgottenPassword.html.twig', [
+        ]);
+    }
+
+    #[Route('/reset-password/{token}', name: 'app_reset_password', methods: ['GET', 'POST'])]
+    public function resetPassword(string $token, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManagerInterface,UserPasswordHasherInterface $passwordHasher,): Response
+    {
+        $user = $userRepository->findOneBy(['resetToken' => $token]);
+
+        if (!$user || $user->getResetTokenExpiration() < new \DateTime()) {
+            throw $this->createNotFoundException('Lien invalide ou expiré');
+        }
+
+        if ($request->isMethod('POST')) {
+            $newPassword = $request->request->get('password');
+            $hashedPassword = $passwordHasher->hashPassword($user, $newPassword);
+
+            $user->setPassword($hashedPassword);
+            $user->setResetToken(null);
+            $user->setResetTokenExpiration(null);
+            $entityManagerInterface->flush();
+
+            return $this->redirectToRoute('app_login');
+        }
+
+        return $this->render('security/resetPassword.html.twig', [
+            'token' => $token,
+        ]);
     }
 }

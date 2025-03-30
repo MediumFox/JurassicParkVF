@@ -21,7 +21,7 @@
                     {{ form_row(registrationForm.plainPassword) }}
                     {{ form_row(registrationForm.agreeTerms) }}
 
-                    <button type="submit" class="bg-bleuLune text-white font-semibold px-4 py-2 rounded w-full transition duration-300 hover:bg-bleuGlace cursor-pointer">S'inscrire</button>
+                    <button disabled id="submit" type="submit" class="bg-bleuLune text-white font-semibold px-4 py-2 rounded w-full transition duration-300 hover:bg-bleuGlace cursor-pointer">S'inscrire</button>
                 {{ form_end(registrationForm) }}
 
                 <p class="mt-4 text-bleuLune">
@@ -36,4 +36,55 @@
             <div class="absolute inset-0 z-10 bg-gradient-to-br from-gris via-bleuGlace to-bleuLune opacity-50"></div>
         </div>
     </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let pwd = document.getElementById("client_registration_form_plainPassword");
+        let submit = document.getElementById("submit");
+        let isOkay = false;
+        function isPwdValid(value) {
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            return regex.test(value);
+        }
+
+        pwd.addEventListener('blur', function (){
+            if(!isPwdValid(pwd.value)){
+                pwd.classList.add('border', 'border-red-500');
+                isOkay = false;
+                afficherErreur(pwd, "N'a pas le format : 1 majuscule, une majuscule, un caractère spécial, un nombre, 8 caractères minimum")
+            }else{
+                nettoyerErreur(pwd);
+                isOkay = true;
+            }
+        })
+
+        submit.addEventListener('click', function (e) {
+            if (!isOkay) {
+                e.preventDefault();
+            } else {
+                nettoyerErreur(pwd);
+            }
+        });
+
+        function afficherErreur(champ, message) {
+            if (champ.nextElementSibling && champ.nextElementSibling.classList.contains('message-erreur')) {
+                champ.nextElementSibling.remove();
+            }
+
+            const divErreur = document.createElement('div');
+            divErreur.textContent = message;
+            divErreur.classList.add('text-red-500', 'text-sm', 'mt-1', 'message-erreur');
+            champ.insertAdjacentElement('afterend', divErreur);
+
+            champ.classList.add('border', 'border-red-500');
+        }
+
+        function nettoyerErreur(champ) {
+            if (champ.nextElementSibling && champ.nextElementSibling.classList.contains('message-erreur')) {
+                champ.nextElementSibling.remove();
+            }
+            champ.classList.remove('border-red-500');
+        }
+    })
+    </script>
 {% endblock %}
