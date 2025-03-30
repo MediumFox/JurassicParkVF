@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Produits{% endblock %}
+
+{% block body %}
+    <h1 class="mb-4">Nos Produits</h1>
+
+    {# On utilise une grille de Bootstrap pour avoir une belle présentation #}
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for product in products %}
+            <div class="col">
+                <div class="card shadow-sm">
+                    <img src="{{ asset('uploads/products/' ~ product.image) }}" class="card-img-top" alt="{{ product.name }}" style="height: 450px; object-fit: cover class="product-image">
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text">{{ product.price }} €</p>
+
+                        <a href="{{ path('cart_add', {id: product.id}) }}" class="btn btn-primary">Ajouter au panier</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

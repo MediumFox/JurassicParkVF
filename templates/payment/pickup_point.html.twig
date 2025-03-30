@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sélection du Point de Récupération{% endblock %}
+
+{% block body %}
+    <h1>Sélectionnez votre point de récupération</h1>
+
+    <form method="POST" action="{{ path('payment_confirm') }}">
+        <div class="mb-3">
+            <label for="pickup_point" class="form-label">Choisir un point de retrait</label>
+            <select class="form-control" id="pickup_point" name="pickup_point" required>
+                {% for point in pickupPoints %}
+                    <option value="{{ point }}">{{ point }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Confirmer</button>
+    </form>
+{% endblock %}

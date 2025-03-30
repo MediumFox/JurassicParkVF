@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+<h1 class="mb-4">🛒 Mon Panier</h1>
+
+{% if items is empty %}
+    <div class="alert alert-warning">Votre panier est vide.</div>
+{% else %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Prix</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+                <tr>
+                    <td><strong>{{ item.product.name }}</strong></td>
+                    <td>
+                        <form action="{{ path('cart_update') }}" method="post" class="d-flex">
+                            <input type="hidden" name="id" value="{{ item.product.id }}">
+                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control w-50 me-2">
+                            <button class="btn btn-sm btn-primary" type="submit">✔</button>
+                        </form>
+                    </td>
+                    <td>{{ item.product.price }} €</td>
+                    <td>{{ item.quantity * item.product.price }} €</td>
+                    <td>
+                        <a class="btn btn-sm btn-danger" href="{{ path('cart_remove', {id: item.product.id}) }}">Supprimer</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Total : <strong>{{ total }} €</strong></h4>
+     <!-- Ajouter un bouton pour aller au paiement -->
+    <a href="{{ path('payement') }}" class="btn btn-primary">Procéder au paiement</a>
+{% endif %}
+{% endblock %}
