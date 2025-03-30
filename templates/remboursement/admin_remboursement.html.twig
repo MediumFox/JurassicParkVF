@@ -1,29 +1,30 @@
-{# templates/remboursement/remboursement.html.twig #}
+{# templates/remboursement/admin_remboursement.html.twig #}
 
 {% extends 'base.html.twig' %}
 
-{% block title %}Vos Demandes de Remboursement{% endblock %}
+{% block title %}Gestion des Remboursements{% endblock %}
 
 {% block body %}
-    <h1>Historique des demandes de remboursement</h1>
+    <h1>Gestion des Demandes de Remboursement</h1>
 
     {% if demandesRemboursement is not empty %}
         <table class="billets-table">
             <thead>
             <tr>
-                <th>Nom du demandeur</th>
-                <th>Prénom du demandeur</th>
+                <th>Nom</th>
+                <th>Prénom</th>
                 <th>Date de début</th>
                 <th>Date de fin</th>
-                <th>Date de la demande</th>
+                <th>Date de demande</th>
                 <th>Motif</th>
                 <th>Montant</th>
                 <th>Statut</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody>
             {% for remboursement in demandesRemboursement %}
-                <tr>
+                <tr data-remboursement-id="{{ remboursement.id }}">
                     <td>{{ remboursement.client.nom }}</td>
                     <td>{{ remboursement.client.prenom }}</td>
                     <td>{{ remboursement.billet.debutBillet|date('d/m/Y') }}</td>
@@ -31,13 +32,17 @@
                     <td>{{ remboursement.dateDemande|date('d/m/Y') }}</td>
                     <td>{{ remboursement.motif }}</td>
                     <td>{{ remboursement.montant }} EUR</td>
-                    <td>{{ remboursement.statut }}</td>
+                    <td class="statut">{{ remboursement.statut }}</td>
+                    <td>
+                        <button class="accept-btn" onclick="updateStatut({{ remboursement.id }}, 'Accepté')">Accepter</button>
+                        <button class="reject-btn" onclick="updateStatut({{ remboursement.id }}, 'Refusé')">Refuser</button>
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
         </table>
     {% else %}
-        <p>Aucune demande de remboursement.</p>
+        <p>Aucune demande de remboursement en cours.</p>
     {% endif %}
 
     <style>
@@ -45,20 +50,55 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 14px;
         }
 
         .billets-table th, .billets-table td {
             padding: 12px;
-            text-align: left;
+            text-align: center;
             border: 1px solid #ddd;
         }
 
         .billets-table th {
             background-color: #f4f4f4;
+            font-size: 14px;
         }
 
         .billets-table td {
             background-color: #fff;
+        }
+
+        /* Styles des boutons */
+        .accept-btn, .reject-btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            color: white;
+            border-radius: 5px;
+            transition: 0.3s ease-in-out;
+            margin: 2px;
+        }
+
+        .accept-btn {
+            background-color: #28a745;
+            box-shadow: 0px 4px 6px rgba(40, 167, 69, 0.2);
+        }
+
+        .accept-btn:hover {
+            background-color: #218838;
+            transform: scale(1.1);
+        }
+
+        .reject-btn {
+            background-color: #dc3545;
+            box-shadow: 0px 4px 6px rgba(220, 53, 69, 0.2);
+        }
+
+        .reject-btn:hover {
+            background-color: #c82333;
+            transform: scale(1.1);
         }
     </style>
 
@@ -75,8 +115,11 @@
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        // Met à jour le statut directement sur la page
+                        const row = document.querySelector(`tr[data-remboursement-id="${remboursementId}"]`);
+                        const statutCell = row.querySelector('.statut');
+                        statutCell.textContent = statut; // Met à jour la cellule du statut
                         alert(`Le remboursement a été ${statut.toLowerCase()} !`);
-                        location.reload(); // Recharge la page pour voir les modifications
                     } else {
                         alert("Erreur : " + data.message);
                     }
@@ -84,6 +127,5 @@
                 .catch(error => console.error('Erreur:', error));
         }
     </script>
-
 
 {% endblock %}

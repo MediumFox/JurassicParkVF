@@ -3,10 +3,11 @@
 // src/Controller/RemboursementBilletController.php
 namespace App\Controller;
 
-use App\Entity\PayerBillet;  // Corrigez l'importation ici
+use App\Entity\PayerBillet;
 use App\Entity\Remboursement;
 use App\Entity\RemboursementBillet;
 use App\Repository\PayerBilletRepository;
+use App\Repository\RemboursementRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RemboursementBilletController extends AbstractController
 {
     #[Route("/client/remboursementBillet", name: "app_client_remboursement_billet", methods: ["GET"])]
-    public function index(PayerBilletRepository $payerBilletRepository): Response
+    public function index(PayerBilletRepository $payerBilletRepository, RemboursementRepository $remboursementRepository): Response
     {
         $client = $this->getUser();
 
@@ -27,19 +28,39 @@ class RemboursementBilletController extends AbstractController
         // Récupérer les billets achetés par l'utilisateur connecté
         $payerBillets = $payerBilletRepository->findBy(['user' => $client]);
 
+        // Vérifier s'il existe déjà une demande de remboursement pour chaque billet
+        foreach ($payerBillets as $payerBillet) {
+            $remboursementExist = $remboursementRepository->findOneBy([
+                'billet' => $payerBillet,
+                'statut' => ['en cours', 'traite'] // Vérifier si une demande est en cours ou traitée
+            ]);
+
+            // Ajouter un attribut dynamique à chaque billet pour contrôler l'affichage du bouton
+            $payerBillet->remboursementPossible = !$remboursementExist; // Bloquer la possibilité si une demande existe
+        }
+
         return $this->render('remboursement_billet/remboursement_billet.html.twig', [
             'payerBillets' => $payerBillets,
         ]);
     }
 
     #[Route("/client/remboursement/{id}", name: "app_client_demande_remboursement_billet", methods: ["POST"])]
-    // src/Controller/RemboursementBilletController.php
-
-    public function demanderRemboursement(PayerBillet $payerBillet, Request $request, EntityManagerInterface $entityManager): Response
+    public function demanderRemboursement(PayerBillet $payerBillet, Request $request, EntityManagerInterface $entityManager, RemboursementRepository $remboursementRepository): Response
     {
         $client = $this->getUser();
         if (!$client || $payerBillet->getUser() !== $client) {
             throw $this->createAccessDeniedException('Vous n\'avez pas l\'autorisation de demander un remboursement pour ce billet.');
+        }
+
+        // Vérification si une demande existe déjà pour ce billet
+        $remboursementExist = $remboursementRepository->findOneBy([
+            'billet' => $payerBillet,
+            'statut' => ['en cours', 'traite'] // Vérifier si une demande est déjà en cours ou traitée
+        ]);
+
+        if ($remboursementExist) {
+            $this->addFlash('error', 'Une demande de remboursement est déjà en cours ou traitée pour ce billet.');
+            return $this->redirectToRoute('app_client_remboursement_billet');
         }
 
         // Traitement de la demande de remboursement
@@ -56,11 +77,9 @@ class RemboursementBilletController extends AbstractController
         $remboursement->setBillet($payerBillet);
 
         // Lier ce remboursement à un billet
-        // Assurez-vous que c'est bien un PayerBillet et pas un FormatBillet
         $remboursementBillet = new RemboursementBillet();
         $remboursementBillet->setRemboursement($remboursement);
-        $remboursementBillet->setBillet($payerBillet);  // Assurez-vous de passer PayerBillet, pas FormatBillet
-        // Vous pouvez ajouter d'autres propriétés au besoin
+        $remboursementBillet->setBillet($payerBillet);
 
         // Ajouter le remboursement à l'entité Remboursement
         $remboursement->addRemboursementBillet($remboursementBillet);

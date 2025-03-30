@@ -1,6 +1,8 @@
+{# templates/remboursement/remboursement.html.twig #}
+
 {% extends 'base.html.twig' %}
 
-{% block title %}Remboursement Billets{% endblock %}
+{% block title %}Vos Billets{% endblock %}
 
 {% block body %}
     <h1>Vos Billets</h1>
@@ -33,7 +35,11 @@
                         </form>
                     </td>
                     <td>
-                        <button class="toggle-motif" data-id="{{ billet.id }}">Demander un remboursement</button>
+                        {% if billet.remboursementPossible %}
+                            <button class="toggle-motif" data-id="{{ billet.id }}">Demander un remboursement</button>
+                        {% else %}
+                            <button class="toggle-motif" data-id="{{ billet.id }}" disabled>Demande déjà en cours ou traitée</button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
