@@ -47,33 +47,8 @@ final class ClientController extends AbstractController
 
         return $this->render('client/profile.html.twig', [
             'client' => $client,
-            'links' => [
-                'remboursement' => $this->generateUrl('app_client_remboursement'),
-                'achat' => $this->generateUrl('app_client_achat'),
-                'remboursement_billet' => $this->generateUrl('app_client_remboursement_billet'),
-            ]
         ]);
     }
-
-    #[Route('/remboursement', name: 'app_client_remboursement', methods: ['GET'])]
-    public function remboursement(): Response
-    {
-    return $this->render('client/remboursement.html.twig');
-    }
- 
-
-     #[Route('/achat', name: 'app_client_achat', methods: ['GET'])]
-    public function achat(): Response
-    {
-        return $this->render('client/achat.html.twig');
-    }
- 
-    #[Route('/remboursement-billet', name: 'app_client_remboursement_billet', methods: ['GET'])]
-    public function remboursementBillet(): Response
-    {
-        return $this->render('client/remboursement_billet.html.twig');
-    }
- 
 
     #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
     public function show(Client $client): Response

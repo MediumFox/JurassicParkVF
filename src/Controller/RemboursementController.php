@@ -17,18 +17,14 @@ class RemboursementController extends AbstractController
     #[Route('/client/remboursement', name: 'app_client_remboursement')]
     public function index(RemboursementRepository $remboursementRepository): Response
     {
-        // Vérifier si l'utilisateur est connecté
         $client = $this->getUser();
         if (!$client) {
-            return $this->redirectToRoute('app_login'); // Redirige vers la page de connexion si non connecté
+            return $this->redirectToRoute('app_login'); 
         }
 
-        // Récupérer toutes les demandes de remboursement du client
         $demandesRemboursement = $remboursementRepository->findBy(['client' => $client]);
-
-        // Rendre la vue avec les demandes de remboursement
         return $this->render('remboursement/remboursement.html.twig', [
-            'demandesRemboursement' => $demandesRemboursement, // Passer la variable à la vue
+            'demandesRemboursement' => $demandesRemboursement, 
         ]);
     }
 
@@ -43,8 +39,6 @@ class RemboursementController extends AbstractController
             'demandesRemboursement' => $demandesRemboursement,
         ]);
     }
-
-    // src/Controller/RemboursementController.php
 
     #[Route('/admin/remboursement/update/{id}', name: 'app_admin_remboursement_update', methods: ['POST'])]
     public function updateStatus(Request $request, Remboursement $remboursement, EntityManagerInterface $entityManager): Response

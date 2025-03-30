@@ -30,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(name: "pwd",length: 255)]
+    #[ORM\Column(name: "password",length: 255)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -148,7 +148,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-<<<<<<< HEAD
 
     public function getResetToken(): ?string
     {
@@ -172,7 +171,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->resetTokenExpiration = $resetTokenExpiration;
 
         return $this;
-=======
+    }
+
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: PayerBillet::class)]
     private DoctrineCollection $payerBillets;
 
@@ -184,6 +184,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getPayerBillets(): Collection
     {
         return $this->payerBillets;
->>>>>>> origin/olivier
     }
 }
