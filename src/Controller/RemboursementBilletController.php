@@ -1,6 +1,5 @@
 <?php
 
-// src/Controller/RemboursementBilletController.php
 namespace App\Controller;
 
 use App\Entity\PayerBillet;
@@ -30,9 +29,10 @@ class RemboursementBilletController extends AbstractController
 
         // Vérifier s'il existe déjà une demande de remboursement pour chaque billet
         foreach ($payerBillets as $payerBillet) {
+            // Vérifier si une demande de remboursement existe déjà pour ce billet
             $remboursementExist = $remboursementRepository->findOneBy([
                 'billet' => $payerBillet,
-                'statut' => ['en cours', 'traite'] // Vérifier si une demande est en cours ou traitée
+                'statut' => ['en cours', 'Accepté','Refusé'] // Vérifier si une demande est en cours ou traitée
             ]);
 
             // Ajouter un attribut dynamique à chaque billet pour contrôler l'affichage du bouton
