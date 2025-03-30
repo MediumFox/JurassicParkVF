@@ -7,9 +7,12 @@ use App\Entity\Administrateur;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
+use phpDocumentor\Reflection\Types\Collection;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection as DoctrineCollection;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -27,7 +30,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "pwd",length: 255)]
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
@@ -145,6 +148,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+<<<<<<< HEAD
 
     public function getResetToken(): ?string
     {
@@ -168,5 +172,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->resetTokenExpiration = $resetTokenExpiration;
 
         return $this;
+=======
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: PayerBillet::class)]
+    private DoctrineCollection $payerBillets;
+
+    public function __construct()
+    {
+        $this->payerBillets = new ArrayCollection();
+    }
+
+    public function getPayerBillets(): Collection
+    {
+        return $this->payerBillets;
+>>>>>>> origin/olivier
     }
 }

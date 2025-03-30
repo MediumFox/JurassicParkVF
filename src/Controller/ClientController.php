@@ -8,10 +8,8 @@ use App\Utils\TraitEmailFormat;
 use DateTime;
 use App\Entity\Date;
 use App\Entity\Client;
-use App\Form\ClientType;
 use App\Entity\LouerHotel;
 use App\Entity\PayerBillet;
-use App\Form\LouerHotelType;
 use App\Form\ReserverBilletType;
 use App\Repository\HotelRepository;
 use App\Repository\ClientRepository;
@@ -37,6 +35,45 @@ final class ClientController extends AbstractController
             'clients' => $clientRepository->findAll(),
         ]);
     }
+
+    #[Route('/profile', name: 'app_client_profile', methods: ['GET'])]
+    public function profile(ClientRepository $clientRepository): Response
+    {
+        $client = $this->getUser(); 
+
+        if (!$client) {
+            return $this->redirectToRoute('app_user_accueil');
+        }
+
+        return $this->render('client/profile.html.twig', [
+            'client' => $client,
+            'links' => [
+                'remboursement' => $this->generateUrl('app_client_remboursement'),
+                'achat' => $this->generateUrl('app_client_achat'),
+                'remboursement_billet' => $this->generateUrl('app_client_remboursement_billet'),
+            ]
+        ]);
+    }
+
+    #[Route('/remboursement', name: 'app_client_remboursement', methods: ['GET'])]
+    public function remboursement(): Response
+    {
+    return $this->render('client/remboursement.html.twig');
+    }
+ 
+
+     #[Route('/achat', name: 'app_client_achat', methods: ['GET'])]
+    public function achat(): Response
+    {
+        return $this->render('client/achat.html.twig');
+    }
+ 
+    #[Route('/remboursement-billet', name: 'app_client_remboursement_billet', methods: ['GET'])]
+    public function remboursementBillet(): Response
+    {
+        return $this->render('client/remboursement_billet.html.twig');
+    }
+ 
 
     #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
     public function show(Client $client): Response

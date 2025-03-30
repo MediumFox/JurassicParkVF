@@ -1,0 +1,89 @@
+{# templates/remboursement/remboursement.html.twig #}
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Vos Demandes de Remboursement{% endblock %}
+
+{% block body %}
+    <h1>Historique des demandes de remboursement</h1>
+
+    {% if demandesRemboursement is not empty %}
+        <table class="billets-table">
+            <thead>
+            <tr>
+                <th>Nom du demandeur</th>
+                <th>Prénom du demandeur</th>
+                <th>Date de début</th>
+                <th>Date de fin</th>
+                <th>Date de la demande</th>
+                <th>Motif</th>
+                <th>Montant</th>
+                <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for remboursement in demandesRemboursement %}
+                <tr>
+                    <td>{{ remboursement.client.nom }}</td>
+                    <td>{{ remboursement.client.prenom }}</td>
+                    <td>{{ remboursement.billet.debutBillet|date('d/m/Y') }}</td>
+                    <td>{{ remboursement.billet.finBillet|date('d/m/Y') }}</td>
+                    <td>{{ remboursement.dateDemande|date('d/m/Y') }}</td>
+                    <td>{{ remboursement.motif }}</td>
+                    <td>{{ remboursement.montant }} EUR</td>
+                    <td>{{ remboursement.statut }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Aucune demande de remboursement.</p>
+    {% endif %}
+
+    <style>
+        .billets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .billets-table th, .billets-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        .billets-table th {
+            background-color: #f4f4f4;
+        }
+
+        .billets-table td {
+            background-color: #fff;
+        }
+    </style>
+
+    <script>
+        function updateStatut(remboursementId, statut) {
+            fetch(`/admin/remboursement/${remboursementId}/statut`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: `statut=${statut}`
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(`Le remboursement a été ${statut.toLowerCase()} !`);
+                        location.reload(); // Recharge la page pour voir les modifications
+                    } else {
+                        alert("Erreur : " + data.message);
+                    }
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+    </script>
+
+
+{% endblock %}

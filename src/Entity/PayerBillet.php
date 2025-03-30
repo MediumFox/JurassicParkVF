@@ -18,7 +18,7 @@ class PayerBillet
     #[ORM\Column(type: 'integer')]
     private ?int $id = null; 
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'lesBillets')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'payerBillets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -29,6 +29,9 @@ class PayerBillet
     #[ORM\ManyToOne(targetEntity: Date::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Date $date = null;
+
+    //#[ORM\ManyToOne(targetEntity: Remboursement::class, inversedBy: 'remboursementBillets')]
+    //private ?Remboursement $remboursement = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $debutBillet = null;
@@ -128,6 +131,18 @@ class PayerBillet
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
+
+        return $this;
+    }
+
+    public function getRemboursement(): ?Remboursement
+    {
+        return $this->remboursement;
+    }
+
+    public function setRemboursement(?Remboursement $remboursement): static
+    {
+        $this->remboursement = $remboursement;
 
         return $this;
     }
