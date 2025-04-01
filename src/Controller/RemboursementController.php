@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManagerInterface;
 class RemboursementController extends AbstractController
 {
     #[Route('/client/remboursement', name: 'app_client_remboursement')]
-    public function index(RemboursementRepository $remboursementRepository): Response
+    public function indexRemboursement(RemboursementRepository $remboursementRepository): Response
     {
         $client = $this->getUser();
         if (!$client) {
@@ -23,8 +23,15 @@ class RemboursementController extends AbstractController
         }
 
         $demandesRemboursement = $remboursementRepository->findBy(['client' => $client]);
+
         return $this->render('remboursement/remboursement.html.twig', [
             'demandesRemboursement' => $demandesRemboursement, 
+            'hero'=> [
+                'title'=> "Les demandes de remboursements en cours",
+                'description' => "",
+                'enabled' => true,
+            ],
+            'page'=>'3',
         ]);
     }
 
@@ -37,6 +44,11 @@ class RemboursementController extends AbstractController
 
         return $this->render('remboursement/admin_remboursement.html.twig', [
             'demandesRemboursement' => $demandesRemboursement,
+            'hero'=> [
+                'title'=> "Les demandes de remboursements en cours",
+                'description' => "",
+                'enabled' => false,
+            ],
         ]);
     }
 

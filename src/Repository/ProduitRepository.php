@@ -27,6 +27,17 @@ class ProduitRepository extends ServiceEntityRepository
         ;
     }
 
+    public function produitsBoutique(): array
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.disponibleAchat = true')
+            ->andWhere('b.stock >= 10')
+            ->orderBy('b.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Produit[] Returns an array of Produit objects
     //     */

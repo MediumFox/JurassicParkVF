@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Panier{% endblock %}
+
+{% block body %}
+{% include 'reuse/hero.html.twig' %}
+<section class="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-4xl font-bold mb-10 text-[#244D61] text-center">🛒 Mon Panier</h1>
+
+    {% if articles is empty %}
+        <div class="bg-yellow-100 text-yellow-800 px-6 py-4 rounded-xl text-center text-lg font-medium">
+            Votre panier est vide.
+        </div>
+    {% else %}
+        <div class="space-y-6">
+            {% for item in articles %}
+                <div class="flex flex-col sm:flex-row items-center bg-white rounded-2xl shadow-md overflow-hidden p-4 gap-6">
+                    <img src="{{ asset(item.product.imageProduit) }}" alt="{{ item.product.libelleProduit }}"
+                         class="w-full sm:w-40 h-40 object-cover rounded-xl border">
+
+                    <div class="flex-1 w-full">
+                        <h2 class="text-xl font-bold text-[#244D61]">{{ item.product.libelleProduit }}</h2>
+                        <p class="text-sm text-gray-600 mt-1">{{ item.product.descriptionProduit|slice(0, 100) ~ '...' }}</p>
+
+                        <div class="mt-4 flex items-center gap-4">
+                            <form action="{{ path('panier_modifier') }}" method="post" class="flex items-center gap-2">
+                                <input type="hidden" name="id" value="{{ item.product.id }}">
+                                <input type="number" name="quantite" value="{{ item.quantity }}" min="1"
+                                       class="w-16 rounded-md border border-gray-300 px-2 py-1 text-center">
+                                <button type="submit"
+                                        class="bg-[#5689C0] hover:bg-[#244D61] text-white px-3 py-1 rounded transition">
+                                    Approuver
+                                </button>
+                            </form>
+
+                            <span class="text-lg font-medium text-gray-700">
+                                {{ item.product.prixProduit|number_format(2, ',', ' ') }} € x {{ item.quantity }} =
+                                <strong class="text-[#244D61]">
+                                    {{ (item.product.prixProduit * item.quantity)|number_format(2, ',', ' ') }} €
+                                </strong>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <a href="{{ path('panier_supprimer', {id: item.product.id}) }}"
+                           class="text-red-600 hover:text-red-800 font-semibold text-sm">
+                            Supprimer
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-10 text-right">
+            <h4 class="text-2xl font-bold text-[#244D61]">Total : {{ total|number_format(2, ',', ' ') }} €</h4>
+            <a href="{{ path('paiement') }}"
+               class="inline-block mt-4 bg-[#5689C0] hover:bg-[#244D61] text-white font-medium px-6 py-3 rounded-xl transition">
+                Procéder au paiement
+            </a>
+        </div>
+    {% endif %}
+    
+</section>
+{% endblock %}

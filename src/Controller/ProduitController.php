@@ -13,6 +13,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Service\CartService;
+
+
 
 #[Route('/admin/produit')]
 final class ProduitController extends AbstractController
@@ -121,23 +124,5 @@ final class ProduitController extends AbstractController
         return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/filter-libelle', name: 'app_produit_filter_name', methods: ['GET'])]
-    public function filterName(Request $request, ProduitRepository $produitRepository): JsonResponse
-    {
-        $libelle = $request->query->get('libelle');
-        $produits = $produitRepository->filterName($libelle);
-
-        if (!$produits) {
-            return new JsonResponse(['success' => false]);
-        }
-    
-        $html = $this->renderView('produit/_produit_cards.html.twig', [
-            'produits' => $produits,
-        ]);
-    
-        return new JsonResponse([
-            'success' => true,
-            'html' => $html
-        ]);
-    }
+ 
 }

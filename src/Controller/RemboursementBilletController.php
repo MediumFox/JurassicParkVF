@@ -41,6 +41,12 @@ class RemboursementBilletController extends AbstractController
 
         return $this->render('remboursement_billet/remboursement_billet.html.twig', [
             'payerBillets' => $payerBillets,
+            'hero'=> [
+                'title'=> "Vos achats de billets",
+                'description' => "",
+                'enabled' => true,
+            ],
+            'page'=>'1',
         ]);
     }
 
@@ -69,6 +75,7 @@ class RemboursementBilletController extends AbstractController
 
         // Création d'un objet Remboursement
         $remboursement = new Remboursement();
+
         $remboursement->setClient($client);
         $remboursement->setDateDemande(new \DateTime()); // La date de la demande
         $remboursement->setStatut('en cours'); // Par défaut, le statut est "en cours"

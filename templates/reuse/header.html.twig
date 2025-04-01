@@ -7,18 +7,15 @@
         </div>
         <div class="flex flex-row gap-7 items-center text-white text-xl">
             {% if user is not null %}
-                <p class="font-bold">Bienvenue, {{ user.nom }} !</p>
+                <p class="font-bold">Bienvenue, {{ user.prenom }} {{ user.nom }} !</p>
                 <p>|</p>
                 <ul class="flex flex-row justify-between gap-6 text-white font-bold">
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/">Accueil</a></li>
                     {% if is_admin %}
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/admin/biome">Les données</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/admin/remboursement">Les remboursements</a></li>
-                        <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/admin/profile">Mon profil</a></li>
                     {% else %}
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/dinopedia">Dinopédia</a></li>
-                        <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/services">Nos services</a></li>
-
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/boutique">Boutique</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/client/reserver-aventure/billet">Réservez votre aventure</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/client/profile">Mon profil</a></li>
@@ -29,7 +26,6 @@
                 <ul class="flex flex-row justify-between gap-4 text-white font-bold">
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/">Accueil</a></li>
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/dinopedia">Dinopédia</a></li>
-                    <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/services">Nos services</a></li>
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/histoire">Histoire</a></li>
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/register">Inscription</a></li>
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/login">Connexion</a></li>
@@ -44,7 +40,7 @@
     </svg>
 </a>
 
-<a href="" class="bottom-8 left-8 bg-bleuGlace rounded-full w-[2.5vw] h-[2.5vw] z-50 fixed flex justify-center items-center">
+<a href="{{path("app_cours_developpement")}}" class="bottom-8 left-8 bg-bleuGlace rounded-full w-[2.5vw] h-[2.5vw] z-50 fixed flex justify-center items-center">
     <svg fill="white" class="size-6 fill-white" viewBox="0 0 16 16">
         <path d="M6 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m4.5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
         <path d="M8 0a7.96 7.96 0 0 0-4.075 1.114q-.245.102-.437.28A8 8 0 1 0 8 0m3.25 14.201a1.5 1.5 0 0 0-2.13.71A7 7 0 0 1 8 15a6.97 6.97 0 0 1-3.845-1.15 1.5 1.5 0 1 0-2.005-2.005A6.97 6.97 0 0 1 1 8c0-1.953.8-3.719 2.09-4.989a1.5 1.5 0 1 0 2.469-1.574A7 7 0 0 1 8 1c1.42 0 2.742.423 3.845 1.15a1.5 1.5 0 1 0 2.005 2.005A6.97 6.97 0 0 1 15 8c0 .596-.074 1.174-.214 1.727a1.5 1.5 0 1 0-1.025 2.25 7 7 0 0 1-2.51 2.224Z"/>

@@ -35,7 +35,7 @@ trait TraitUploadImg
             return null; 
         }
 
-        return 'img/' . $entityFolder . '/' . $newFilename; // chemin relatif pour affichage web
+        return 'img/' . $entityFolder . '/' . $newFilename; 
     }
 
     public function removeImg(string $fileName, string $entityFolder): ?bool
@@ -44,7 +44,7 @@ trait TraitUploadImg
         $filePath = $targetDir . '/' . $fileName;
     
         if (!file_exists($filePath)) {
-            return null; // fichier introuvable
+            return null; 
         }
     
         try {

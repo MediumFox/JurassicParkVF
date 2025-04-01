@@ -131,7 +131,7 @@ final class UserController extends AbstractController
         return array_slice($restaurants, 0, $count);
     }
 
-    #[Route('/mot-de-passe-oublie', name: 'app_dinopedia', methods: ['GET','POST'])]
+    #[Route('/mot-de-passe-oublie', name: 'app_mdp_forgotten', methods: ['GET','POST'])]
     public function motDePasseOublie(Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository, MailerInterface $mailerInterface): Response
     {
         if ($request->isMethod('POST')) {
@@ -156,7 +156,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/reset-password/{token}', name: 'app_reset_password', methods: ['GET', 'POST'])]
-    public function resetPassword(string $token, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManagerInterface,UserPasswordHasherInterface $passwordHasher,): Response
+    public function resetPassword(string $token, Request $request, UserRepository $userRepository, EntityManagerInterface $entityManagerInterface,UserPasswordHasherInterface $passwordHasher): Response
     {
         $user = $userRepository->findOneBy(['resetToken' => $token]);
 
@@ -178,6 +178,57 @@ final class UserController extends AbstractController
 
         return $this->render('security/resetPassword.html.twig', [
             'token' => $token,
+        ]);
+    }
+
+
+    #[Route('/hotel/{id}', name: 'app_un_hotel', methods: ['GET'])]
+    public function afficherUnHotel(int $id ,Request $request, HotelRepository $hotelRepository): Response
+    {
+        $hotel = $hotelRepository->find($id);
+        $libelle = $hotel->getLibelleHotel();
+        $desc = $hotel->getDescriptionHotel();
+        return $this->render('hotel/un-hotel.html.twig', [
+            'hotel' => $hotel,
+            'hero'=> [
+                'title'=> "Hôtel $libelle",
+                'description' => "$desc",
+                'enabled' => true,
+            ]
+        ]);
+    }
+
+    #[Route('/restaurant/{id}', name: 'app_un_restaurant', methods: ['GET'])]
+    public function afficherUnRestaurant(int $id ,Request $request, RestaurantRepository $restaurantRepository): Response
+    {
+        $restaurant = $restaurantRepository->find($id);
+        $libelle = $restaurant->getLibelleRestaurant();
+        return $this->render('restaurant/un-restaurant.html.twig', [
+            'restaurant' => $restaurant,
+            'hero'=> [
+                'title'=> "Le restaurant $libelle",
+                'description' => "Nos restaurants vous font la promesse de la plus haute qualité de service mais aussi de sensations.",
+                'enabled' => true,
+            ]
+        ]);
+    }
+
+    #[Route('/en-cours-de-developpement', name: 'app_cours_developpement', methods: ['GET'])]
+    public function incoming(): Response
+    {
+        return $this->render('reuse/incoming.html.twig', [
+        ]);
+    }
+
+    #[Route('/histoire', name: 'app_histoire', methods: ['GET'])]
+    public function histoire(): Response
+    {
+        return $this->render('user/histoire.html.twig', [
+            'hero'=> [
+                'title'=> "L'histoire de notre île",
+                'description' => "Explorez notre encyclopédie remplie d'histoires fascinantes.",
+                'enabled' => true,
+            ]
         ]);
     }
 }

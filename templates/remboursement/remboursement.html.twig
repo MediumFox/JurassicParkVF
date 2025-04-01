@@ -4,62 +4,66 @@
 {% block title %}Vos Demandes de Remboursement{% endblock %}
 
 {% block body %}
-    <h1>Historique des demandes de remboursement</h1>
+    {% include 'reuse/hero.html.twig' %}
+    <div class="p-5 w-full h-[50vh] flex justify-center items-center relative dark:bg-gray-900">
+        {% include 'client/dashboard-client.html.twig' %}
 
-    {% if demandesRemboursement is not empty %}
-        <table class="billets-table">
-            <thead>
-            <tr>
-                <th>Nom du demandeur</th>
-                <th>Prénom du demandeur</th>
-                <th>Date de début</th>
-                <th>Date de fin</th>
-                <th>Date de la demande</th>
-                <th>Motif</th>
-                <th>Montant</th>
-                <th>Statut</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for remboursement in demandesRemboursement %}
-                <tr>
-                    <td>{{ remboursement.client.nom }}</td>
-                    <td>{{ remboursement.client.prenom }}</td>
-                    <td>{{ remboursement.billet.debutBillet|date('d/m/Y') }}</td>
-                    <td>{{ remboursement.billet.finBillet|date('d/m/Y') }}</td>
-                    <td>{{ remboursement.dateDemande|date('d/m/Y') }}</td>
-                    <td>{{ remboursement.motif }}</td>
-                    <td>{{ remboursement.montant }} EUR</td>
-                    <td>{{ remboursement.statut }}</td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Aucune demande de remboursement.</p>
-    {% endif %}
+        <div class="w-full max-w-6xl bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 ml-[30%]">
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-white mb-6 flex items-center gap-2">
+                Historique des demandes de remboursement
+            </h1>
 
-    <style>
-        .billets-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .billets-table th, .billets-table td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        .billets-table th {
-            background-color: #f4f4f4;
-        }
-
-        .billets-table td {
-            background-color: #fff;
-        }
-    </style>
+            {% if demandesRemboursement is not empty %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-left border-collapse">
+                        <thead class="bg-bleuGlace text-white uppercase text-xs">
+                            <tr>
+                                <th class="p-3">Nom</th>
+                                <th class="p-3">Prénom</th>
+                                <th class="p-3">Début</th>
+                                <th class="p-3">Fin</th>
+                                <th class="p-3">Demande</th>
+                                <th class="p-3">Motif</th>
+                                <th class="p-3">Montant</th>
+                                <th class="p-3">Statut</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white dark:bg-slate-700 divide-y divide-gray-200 dark:divide-slate-600">
+                            {% for remboursement in demandesRemboursement %}
+                                <tr class="hover:bg-gray-50 dark:hover:bg-slate-600 transition">
+                                    <td class="p-3">{{ remboursement.client.nom }}</td>
+                                    <td class="p-3">{{ remboursement.client.prenom }}</td>
+                                    <td class="p-3">{{ remboursement.billet.debutBillet|date('d/m/Y') }}</td>
+                                    <td class="p-3">{{ remboursement.billet.finBillet|date('d/m/Y') }}</td>
+                                    <td class="p-3">{{ remboursement.dateDemande|date('d/m/Y') }}</td>
+                                    <td class="p-3 max-w-[200px] truncate" title="{{ remboursement.motif }}">{{ remboursement.motif }}</td>
+                                    <td class="p-3">{{ remboursement.montant }} €</td>
+                                    <td class="p-3">
+                                        {% set status = remboursement.statut|lower %}
+                                        {% if status == 'accepté' %}
+                                            <span class="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full dark:bg-green-800 dark:text-white">
+                                                Acceptée
+                                            </span>
+                                        {% elseif status == 'refusée' %}
+                                            <span class="bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded-full dark:bg-red-800 dark:text-white">
+                                                Refusée
+                                            </span>
+                                        {% else %}
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full dark:bg-yellow-700 dark:text-white">
+                                                En attente
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-slate-600 dark:text-slate-300">Aucune demande de remboursement enregistrée.</p>
+            {% endif %}
+        </div>
+    </div>
 
     <script>
         function updateStatut(remboursementId, statut) {

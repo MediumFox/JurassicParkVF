@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sélection du Point de Récupération{% endblock %}
+
+{% block body %}
+<section class="max-w-xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-3xl font-bold text-center text-[#244D61] mb-8">
+        Sélectionnez votre point de récupération
+    </h1>
+
+    <form method="POST" action="{{ path('point_retrait') }}"
+          class="bg-white shadow-md rounded-2xl p-8 space-y-6">
+
+        <div>
+            <label for="pickup_point" class="block text-sm font-medium text-gray-700 mb-2">
+                Choisir un point de retrait
+            </label>
+            <select id="pickup_point" name="pickup_point" required
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#244D61] focus:border-[#244D61]">
+                {% for point in pointsRetrait %}
+                    <option value="{{ point }}">{{ point }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="pt-4">
+            <button type="submit"
+                    class="w-full bg-[#5689C0] hover:bg-[#244D61] text-white font-semibold py-3 rounded-xl transition cursor-pointer">
+                Confirmer le point de retrait
+            </button>
+        </div>
+    </form>
+</section>
+{% endblock %}

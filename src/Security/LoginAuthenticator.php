@@ -2,7 +2,9 @@
 
 namespace App\Security;
 
+use App\Entity\Administrateur;
 use App\Entity\Client;
+use App\Entity\User;
 use App\Utils\TraitEmailFormat;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -46,7 +48,7 @@ class LoginAuthenticator extends AbstractLoginFormAuthenticator
 
         return new Passport(
             new UserBadge($email, function ($userIdentifier) {
-                $user = $this->entityManager->getRepository(Client::class)->findOneBy(['email' => $userIdentifier]);
+                $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userIdentifier]);
                 if (!$user) {
                     throw new CustomUserMessageAuthenticationException('Email ou mot de passe invalide.');
                 }

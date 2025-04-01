@@ -31,25 +31,25 @@
 {% include 'reuse/display/addDisplay.html.twig' %}
 {% include 'reuse/display/updateDisplay.html.twig' %}
 
-    <script>
-        function filterName() {
-            const container = document.getElementById("produitContainer");
-            const libelle = document.getElementById("filterName").value;
-            const url = "{{ path('app_produit_filter_name') }}?libelle=" + encodeURIComponent(libelle);
+<script>
+    function filterName() {
+        const container = document.getElementById("produitContainer");
+        const libelle = document.getElementById("filterName").value;
+        const url = "{{ path('app_produit_filter_name') }}?libelle=" + encodeURIComponent(libelle);
 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    if (!data.success) {
-                        container.innerHTML = "<p class='text-red-500 text-sm'>Aucun produit trouvé.</p>";
-                        return;
-                    }
-                    container.innerHTML = data.html;
-                })
-                .catch(error => {
-                    console.error(error);
-                    container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
-                });
-        }
-    </script>
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (!data.success) {
+                    container.innerHTML = "<p class='text-red-500 text-sm'>Aucun produit trouvé.</p>";
+                    return;
+                }
+                container.innerHTML = data.html;
+            })
+            .catch(error => {
+                console.error(error);
+                container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
+            });
+    }
+</script>
 {% endblock %}

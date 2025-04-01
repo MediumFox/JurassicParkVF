@@ -55,4 +55,20 @@ trait TraitEmailFormat
             return false;
         }
     }
+
+    public function sendMailPaiementBoutique(string $toEmail, MailerInterface $mailer): bool
+    {
+        $email = (new Email())
+            ->from('no-reply@mon-site.com')
+            ->to($toEmail)
+            ->subject('Confirmation de votre commande')
+            ->text("Votre commande de produits sur notree boutique a bien été passé. <br><br> Afin de récuperer vos produits, n'oubliez pas de venir les chercher sur l'île.");
+
+        try {
+            $mailer->send($email);
+            return true;
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
 }

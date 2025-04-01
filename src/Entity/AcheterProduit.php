@@ -9,67 +9,45 @@ use Doctrine\ORM\Mapping as ORM;
 class AcheterProduit
 {
     #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'produitsAchetes')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Client $client = null;
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
 
-    #[ORM\Id]
-    #[ORM\ManyToOne(inversedBy: 'lesClients')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\ManyToOne(inversedBy: 'achats')]
+    private ?Commande $commande = null;
+
+    #[ORM\ManyToOne(inversedBy: 'achats')]
     private ?Produit $produit = null;
 
     #[ORM\Column]
-    private ?int $qte = null;
+    private ?int $quantite = null;
 
-    #[ORM\Id]
-    #[ORM\ManyToOne]
-    private ?Date $date = null;
+    #[ORM\Column]
+    private ?float $prix = null;
 
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function setClient(?Client $client): static
-    {
-        $this->client = $client;
-
+    public function getCommande(): ?Commande { return $this->commande; }
+    public function setCommande(?Commande $commande): static {
+        $this->commande = $commande;
         return $this;
     }
 
-    public function getProduit(): ?Produit
-    {
-        return $this->produit;
-    }
-
-    public function setProduit(?Produit $produit): static
-    {
+    public function getProduit(): ?Produit { return $this->produit; }
+    public function setProduit(?Produit $produit): static {
         $this->produit = $produit;
-
         return $this;
     }
 
-    public function getQte(): ?int
-    {
-        return $this->qte;
-    }
-
-    public function setQte(int $qte): static
-    {
-        $this->qte = $qte;
-
+    public function getQuantite(): ?int { return $this->quantite; }
+    public function setQuantite(int $quantite): static {
+        $this->quantite = $quantite;
         return $this;
     }
 
-    public function getDate(): ?Date
-    {
-        return $this->date;
-    }
-
-    public function setDate(?Date $date): static
-    {
-        $this->date = $date;
-
+    public function getPrix(): ?float { return $this->prix; }
+    public function setPrix(float $prix): static {
+        $this->prix = $prix;
         return $this;
     }
 }

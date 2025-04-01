@@ -36,8 +36,8 @@ final class ClientController extends AbstractController
         ]);
     }
 
-    #[Route('/profile', name: 'app_client_profile', methods: ['GET'])]
-    public function profile(ClientRepository $clientRepository): Response
+    #[Route('/profile', name: 'app_client_profile', methods: ['GET', 'POST'])]
+    public function profile(ClientRepository $clientRepository, Request $request, EntityManagerInterface $entityManagerInterface): Response
     {
         $client = $this->getUser(); 
 
@@ -45,28 +45,28 @@ final class ClientController extends AbstractController
             return $this->redirectToRoute('app_user_accueil');
         }
 
+        if ($request->getMethod() === 'POST') {
+            $client->setEmail($request->request->get('email'));
+            $client->setNom($request->request->get('nom'));
+            $client->setPrenom($request->request->get('prenom'));
+            $client->setNumeroTelephone($request->request->get('numeroTelephone'));
+            $client->setAdressePostal($request->request->get('adressePostal'));
+            $client->setCodePostal($request->request->get('codePostal'));
+        
+            $entityManagerInterface->persist($client);
+            $entityManagerInterface->flush();
+        }
+        
+
         return $this->render('client/profile.html.twig', [
             'client' => $client,
+            'hero'=> [
+                'title'=> "Mon espace client",
+                'description' => "",
+                'enabled' => true,
+            ],
+            'page'=>'2',
         ]);
-    }
-
-    #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
-    public function show(Client $client): Response
-    {
-        return $this->render('client/show.html.twig', [
-            'client' => $client,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_client_delete', methods: ['POST'])]
-    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($client);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/reserver-aventure/billet', name: 'app_client_payer', methods: ['POST', 'GET'])]
@@ -209,7 +209,7 @@ final class ClientController extends AbstractController
         ]);
     }
 
-    #[Route('/reserver-aventure/recapitulatif', name: 'app_client_recapitulatif', methods: ['GET'])]
+    #[Route('/reserver-aventure/recapitulatif', name: 'app_client_recapitulatif', methods: ['GET', 'POST'])]
     public function recapitulatifCommande(Request $request,RestaurantRepository $restaurantRepository,FormatBilletRepository $formatBilletRepository, HotelRepository $hotelRepository, FormatChambreRepository $formatChambreRepository): Response
     {
         if(!$request->getSession()->get('payer_billet_data') && !$request->getSession()->get('louer_hotel_data') && !$request->getSession()->get('reserver_restaurant_data')){

@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement{% endblock %}
+
+{% block body %}
+    <h1>Paiement</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    <form action="{{ path('payment_confirm') }}" method="POST">
+        <div class="mb-3">
+            <label for="card_number" class="form-label">Numéro de carte</label>
+            <input type="text" class="form-control" id="card_number" name="card_number" placeholder="1234 5678 9101 1121" required>
+        </div>
+        <div class="mb-3">
+            <label for="expiry_date" class="form-label">Date d'expiration</label>
+            <input type="text" class="form-control" id="expiry_date" name="expiry_date" placeholder="MM/AA" required>
+        </div>
+        <div class="mb-3">
+            <label for="cvv" class="form-label">Code de sécurité (CVV)</label>
+            <input type="text" class="form-control" id="cvv" name="cvv" placeholder="123" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Payer</button>
+    </form>
+{% endblock %}

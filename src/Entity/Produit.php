@@ -33,118 +33,96 @@ class Produit
     #[ORM\Column]
     private ?float $prixProduit = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $slug = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
     /**
      * @var Collection<int, AcheterProduit>
      */
-    #[ORM\OneToMany(targetEntity: AcheterProduit::class, mappedBy: 'Produit')]
-    private Collection $lesClients;
+    #[ORM\OneToMany(targetEntity: AcheterProduit::class, mappedBy: 'produit')]
+    private Collection $achats;
 
     public function __construct()
     {
-        $this->lesClients = new ArrayCollection();
+        $this->achats = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getLibelleProduit(): ?string
-    {
-        return $this->libelleProduit;
-    }
-
-    public function setLibelleProduit(string $libelleProduit): static
-    {
+    public function getLibelleProduit(): ?string { return $this->libelleProduit; }
+    public function setLibelleProduit(string $libelleProduit): static {
         $this->libelleProduit = $libelleProduit;
-
         return $this;
     }
 
-    public function getImageProduit(): ?string
-    {
-        return $this->imageProduit;
-    }
-
-    public function setImageProduit(string $imageProduit): static
-    {
+    public function getImageProduit(): ?string { return $this->imageProduit; }
+    public function setImageProduit(string $imageProduit): static {
         $this->imageProduit = $imageProduit;
-
         return $this;
     }
 
-    public function getDescriptionProduit(): ?string
-    {
-        return $this->descriptionProduit;
-    }
-
-    public function setDescriptionProduit(string $descriptionProduit): static
-    {
+    public function getDescriptionProduit(): ?string { return $this->descriptionProduit; }
+    public function setDescriptionProduit(string $descriptionProduit): static {
         $this->descriptionProduit = $descriptionProduit;
-
         return $this;
     }
 
-    public function getStock(): ?int
-    {
-        return $this->stock;
-    }
-
-    public function setStock(int $stock): static
-    {
+    public function getStock(): ?int { return $this->stock; }
+    public function setStock(int $stock): static {
         $this->stock = $stock;
-
         return $this;
     }
 
-    public function isDisponibleAchat(): ?bool
-    {
-        return $this->disponibleAchat;
-    }
-
-    public function setDisponibleAchat(bool $disponibleAchat): static
-    {
+    public function isDisponibleAchat(): ?bool { return $this->disponibleAchat; }
+    public function setDisponibleAchat(bool $disponibleAchat): static {
         $this->disponibleAchat = $disponibleAchat;
-
         return $this;
     }
 
-    public function getPrixProduit(): ?float
-    {
-        return $this->prixProduit;
+    public function getPrixProduit(): ?float { return $this->prixProduit; }
+    public function setPrixProduit(float $prixProduit): static {
+        $this->prixProduit = $prixProduit;
+        return $this;
     }
 
-    public function setPrixProduit(float $prixProduit): static
-    {
-        $this->prixProduit = $prixProduit;
+    public function getSlug(): ?string { return $this->slug; }
+    public function setSlug(?string $slug): static {
+        $this->slug = $slug;
+        return $this;
+    }
 
+    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): static {
+        $this->createdAt = $createdAt;
         return $this;
     }
 
     /**
      * @return Collection<int, AcheterProduit>
      */
-    public function getLesClients(): Collection
+    public function getAchats(): Collection
     {
-        return $this->lesClients;
+        return $this->achats;
     }
 
-    public function addLesClient(AcheterProduit $lesClient): static
+    public function addAchat(AcheterProduit $achat): static
     {
-        if (!$this->lesClients->contains($lesClient)) {
-            $this->lesClients->add($lesClient);
-            $lesClient->setProduit($this);
+        if (!$this->achats->contains($achat)) {
+            $this->achats->add($achat);
+            $achat->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeLesClient(AcheterProduit $lesClient): static
+    public function removeAchat(AcheterProduit $achat): static
     {
-        if ($this->lesClients->removeElement($lesClient)) {
-            // set the owning side to null (unless already changed)
-            if ($lesClient->getProduit() === $this) {
-                $lesClient->setProduit(null);
+        if ($this->achats->removeElement($achat)) {
+            if ($achat->getProduit() === $this) {
+                $achat->setProduit(null);
             }
         }
 

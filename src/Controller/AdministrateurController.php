@@ -49,24 +49,6 @@ final class AdministrateurController extends AbstractController
         ]);
     }
 
-    
-    #[Route('/edit/{id}', name: 'app_client_edit', methods: ['POST'])]
-    public function edit(Request $request, Client $client, EntityManagerInterface $entityManager): JsonResponse
-    {
-        $form = $this->createForm(ClientType::class, $client);
-        $form->handleRequest($request);
-    
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-    
-            return new JsonResponse(['success' => true]);
-        }
-    
-        return new JsonResponse([
-            'success' => false,
-            'errors' => (string) $form->getErrors(true, false)
-        ]);
-    }
 
     #[Route('/filter-libelle-client', name: 'app_client_filter_name', methods: ['GET'])]
     public function filterName(Request $request, ClientRepository $clientRepository): JsonResponse

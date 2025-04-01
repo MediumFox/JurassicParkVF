@@ -11,11 +11,11 @@ class ProduitFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $produits = [
-            ['Peluches Dino', "Peluches douces représentant vos dinosaures préférés.", 'peluche.jpg', 25, true, 100],
-            ['Casquette Jurassic', "Casquette officielle du parc avec logo brodé.", 'casquette.jpg', 18, true, 50],
-            ['Gourde personnalisée', "Gourde réutilisable avec prénom gravé, souvenir idéal.", 'gourde.jpg', 15, true, 75],
-            ['Poster panoramique', "Poster géant du parc vu du ciel, édition limitée.", 'poster.jpg', 10, true, 30],
-            ['Mug T-Rex', "Mug en céramique avec illustration du célèbre T-Rex.", 'mug.jpg', 12, false, 0],
+            ['Peluches Dino', "Peluches douces représentant vos dinosaures préférés.", 'img/Produits/peluche.jpg', 25, true, 100],
+            ['Casquette Jurassic', "Casquette officielle du parc avec logo brodé.", 'img/Produits/casquette.jpg', 18, true, 50],
+            ['Gourde personnalisée', "Gourde réutilisable avec prénom gravé, souvenir idéal.", 'img/Produits/gourde.jpg', 15, true, 75],
+            ['Poster panoramique', "Poster géant du parc vu du ciel, édition limitée.", 'img/Produits/poster.jpg', 10, true, 30],
+            ['Mug T-Rex', "Mug en céramique avec illustration du célèbre T-Rex.", 'img/Produits/mug.jpg', 12, false, 0],
         ];
 
         foreach ($produits as [$libelle, $description, $image, $prix, $disponible, $stock]) {

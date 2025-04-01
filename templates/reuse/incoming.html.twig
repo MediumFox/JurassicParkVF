@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page en cours de développement{% endblock %}
+
+{% block body %}
+<section class="min-h-screen flex flex-col justify-center items-center text-center px-4 bg-white">
+    <img src="{{ asset('img/en-cours-de-dev.png') }}" alt="Page en construction"
+         class="w-72 h-72 object-contain mb-8">
+
+    <h1 class="text-3xl sm:text-4xl font-bold text-[#244D61] mb-4">Cette page est en cours de développement</h1>
+    <p class="text-gray-600 text-lg">Revenez bientôt pour découvrir cette section</p>
+
+    <a href="{{ path('app_user_accueil') }}"
+       class="mt-8 inline-block bg-[#5689C0] hover:bg-[#244D61] text-white font-semibold py-3 px-6 rounded-xl transition">
+        ⬅ Retour à l'accueil
+    </a>
+</section>
+{% endblock %}

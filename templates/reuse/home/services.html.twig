@@ -8,9 +8,9 @@
         </div>
         <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-gradient-move pointer-events-none z-0"></div>
 
-        <div class="w-full flex flex-wrap justify-center gap-20 relative z-10 border border-gray-300 py-10 px-20 shadow-2xl rounded-3xl bg-white/80 backdrop-blur-md transition-all duration-500">
+        <div class="w-full flex flex-wrap justify-center gap-20 relative z-10 py-10 px-20 rounded-3xl transition-all duration-500">
             {% for r in randomRestaurants %}
-                <div class="rounded-lg overflow-hidden relative w-[45%] h-[350px] shadow-lg transition transform hover:scale-105">
+                <div class="rounded-lg overflow-hidden relative w-[45%] h-[300px] shadow-lg transition transform hover:scale-105">
                     <div class="h-[55%] overflow-hidden">
                         <img 
                             src="{{ asset(r.imageRestaurant) }}" 
@@ -31,7 +31,7 @@
                             <span class="text-white font-bold text-lg">
                                 Biome : <i class="text-bleuGlace">{{ r.biome.libelleBiome }}</i>
                             </span>
-                            <a href="#" class="rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
+                            <a href="/restaurant/{{r.id}}" class="rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
                                 En savoir plus
                             </a>
                         </div>
