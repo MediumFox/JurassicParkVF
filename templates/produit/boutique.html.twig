@@ -7,10 +7,10 @@
     <section class=" min-h-screen py-12 px-4 sm:px-6 lg:px-8 text-slate-900">
         <div class="max-w-[90%] mx-auto">
             <div class="text-center mb-10">
-                <h1 class="text-4xl font-bold inline-block border-b-4 pb-2 border-[#244D61]">
+                <h1 class="text-4xl font-bold inline-block border-b-4 pb-2 dark:text-white dark:border-white border-[#244D61]">
                     Découvrez nos produits
                 </h1>
-                <p class="text-[#5689C0] mt-2">Des articles de qualité pour vos besoins !</p>
+                <p class="text-[#5689C0] mt-2 dark:text-white">Des articles de qualité pour vos besoins !</p>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 p-8 lg:grid-cols-3 gap-8 bg-slate-900 rounded ">
                 {% for produit in produits %}
@@ -54,5 +54,4 @@
             </div>
         </div>
     </section>
-    <script>
 {% endblock %}

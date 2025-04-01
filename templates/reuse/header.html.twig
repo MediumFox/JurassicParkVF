@@ -9,18 +9,40 @@
             {% if user is not null %}
                 <p class="font-bold">Bienvenue, {{ user.prenom }} {{ user.nom }} !</p>
                 <p>|</p>
-                <ul class="flex flex-row justify-between gap-6 text-white font-bold">
+                <ul class="flex flex-row justify-between items-center gap-6 text-white font-bold mr-3">
                     <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/">Accueil</a></li>
                     {% if is_admin %}
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/admin/biome">Les données</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/admin/remboursement">Les remboursements</a></li>
+                        <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/logout">Déconnexion</a></li>
                     {% else %}
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/dinopedia">Dinopédia</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/boutique">Boutique</a></li>
                         <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/client/reserver-aventure/billet">Réservez votre aventure</a></li>
-                        <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/client/profile">Mon profil</a></li>
+                        <li class="relative group">
+                            <button class="flex items-center gap-1 px-2 py-1 rounded hover:bg-white hover:text-bleuLune font-bold transition duration-300">
+                                Mon compte
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <ul class="absolute hidden group-hover:flex flex-col bg-white text-[#244D61] rounded-md shadow-lg top-full right-0 z-50 w-48 text-sm overflow-hidden">
+                                <li>
+                                    <a href="/client/profile" class="block px-4 py-2 hover:bg-[#f0f4f8] hover:text-[#244D61] transition">Mon profil</a>
+                                </li>
+                                <li>
+                                    <a href="/logout" class="block px-4 py-2 hover:bg-[#f0f4f8] hover:text-[#244D61] transition">Déconnexion</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <p class="font-normal">|</p>
+                        <a href="/panier">
+                            <svg fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 mt-1.5 cursor-pointer">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                            </svg>
+                        </a>
+
                     {% endif %}
-                    <li class=" hover:text-bleuLune transition duration-500 px-2 py-1 rounded hover:bg-white "><a href="/logout">Déconnexion</a></li>
                 </ul>
             {% else %}
                 <ul class="flex flex-row justify-between gap-4 text-white font-bold">
@@ -35,14 +57,8 @@
     </nav>
 </header>
 <a href="#" class="bottom-8 right-8 bg-bleuGlace rounded-full w-[2.5vw] h-[2.5vw] z-50 fixed flex justify-center items-center">
-    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6 fill-white">
+    <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="white" class="size-6 fill-white ">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 10.5 12 3m0 0 7.5 7.5M12 3v18" />
     </svg>
 </a>
 
-<a href="{{path("app_cours_developpement")}}" class="bottom-8 left-8 bg-bleuGlace rounded-full w-[2.5vw] h-[2.5vw] z-50 fixed flex justify-center items-center">
-    <svg fill="white" class="size-6 fill-white" viewBox="0 0 16 16">
-        <path d="M6 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0m4.5.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-.5 3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0"/>
-        <path d="M8 0a7.96 7.96 0 0 0-4.075 1.114q-.245.102-.437.28A8 8 0 1 0 8 0m3.25 14.201a1.5 1.5 0 0 0-2.13.71A7 7 0 0 1 8 15a6.97 6.97 0 0 1-3.845-1.15 1.5 1.5 0 1 0-2.005-2.005A6.97 6.97 0 0 1 1 8c0-1.953.8-3.719 2.09-4.989a1.5 1.5 0 1 0 2.469-1.574A7 7 0 0 1 8 1c1.42 0 2.742.423 3.845 1.15a1.5 1.5 0 1 0 2.005 2.005A6.97 6.97 0 0 1 15 8c0 .596-.074 1.174-.214 1.727a1.5 1.5 0 1 0-1.025 2.25 7 7 0 0 1-2.51 2.224Z"/>
-    </svg>
-</a>

@@ -1,6 +1,6 @@
 <div class="p-5 py-14 relative overflow-hidden bg-[linear-gradient(135deg,_#244D61,_#5689C0,_#EAEBED)]">
     <div class="text-center mb-10">
-        <span class="text-white text-3xl font-extrabold tracking-wide inline-block animate-fade-in">
+        <span class="text-white  text-3xl font-extrabold tracking-wide inline-block animate-fade-in">
             Météo sur l'île Jurassique
         </span>
         <div class="w-20 h-1 bg-white mx-auto mt-2 rounded animate-pulse"></div>
@@ -57,13 +57,13 @@
             }[condition] || condition;
 
             html += `
-                <div class="bg-white shadow-xl rounded-xl p-6 cursor-pointer ${index === 2 ? 'scale-110 opacity-100 z-10 mx-2' : 'opacity-75'}
+                <div class="bg-white dark:bg-black shadow-xl rounded-xl p-6 cursor-pointer ${index === 2 ? 'scale-110 opacity-100 z-10 mx-2' : 'opacity-75'}
                             text-center w-[18%] transition-all duration-300"
                      onclick="renderCards(${(centerIndex + index) % forecastData.length})">
-                    <p class="font-semibold text-slate-900 mb-2">${dateFr}</p>
+                    <p class="font-semibold text-slate-900 mb-2 dark:text-white">${dateFr}</p>
                     <img src="https:${icon}" alt="${condition}" class="mx-auto mb-2 w-16 h-16">
-                    <p class="text-bleuLune font-bold text-lg mb-1">${conditionFr}</p>
-                    <p class="text-bleuGlace italic text-sm">${min}°C / ${max}°C</p>
+                    <p class="text-bleuLune font-bold text-lg mb-1 dark:text-white">${conditionFr}</p>
+                    <p class="text-bleuGlace italic text-sm dark:text-white">${min}°C / ${max}°C</p>
                 </div>
             `;
         });

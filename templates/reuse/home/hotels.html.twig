@@ -1,12 +1,12 @@
-<div class="w-full min-h-[70vh] flex flex-col items-center p-5 m-10 relative -top-9">
+<div class="w-full min-h-[70vh] flex flex-col items-center p-5 m-10 relative -top-9 ">
     <div class="w-[90%] min-h-[50%]">
             
         <div class="text-center mb-10">
-            <h1 class="mb-6 text-3xl text-bleuLune font-bold text-center">Nos hôtels</h1>
-            <div class="w-20 h-1 bg-bleuLune mx-auto mt-2 rounded animate-pulse"></div>
-            <p class="text-bleuGlace mt-2 italic text-sm">Prévisions des prochains jours pour nos visiteurs intrépides, soyez vigilant en cas de fortes pluies (avalanches, éboulements ou glissements de terrains fréquent)</p>
+            <h1 class="mb-6 text-3xl text-bleuLune font-bold text-center dark:text-white ">Nos hôtels</h1>
+            <div class="w-20 h-1 bg-bleuLune mx-auto mt-2 rounded animate-pulse dark:bg-white"></div>
+            <p class="text-bleuGlace mt-2 italic text-sm dark:text-white">Prévisions des prochains jours pour nos visiteurs intrépides, soyez vigilant en cas de fortes pluies (avalanches, éboulements ou glissements de terrains fréquent)</p>
         </div>
-        <div class="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-white/5 animate-gradient-move pointer-events-none z-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-br animate-gradient-move pointer-events-none z-0"></div>
 
         <div class="w-full flex flex-wrap justify-center gap-20 relative z-10 py-10 px-20 rounded-3xl transition-all duration-500">
             {% for h in randomHotels %}
@@ -31,7 +31,7 @@
                             <span class="text-white font-bold text-lg">
                                 Biome : <i class="text-bleuGlace">{{ h.biome.libelleBiome }}</i>
                             </span>
-                            <a href="/hotel/{{h.id}}" class="rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
+                            <a href="/hotel/{{h.id}}" class="dark:text-black rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
                                 En savoir plus
                             </a>
                         </div>
