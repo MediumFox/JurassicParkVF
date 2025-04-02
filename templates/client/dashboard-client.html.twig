@@ -2,11 +2,12 @@
 {% set menu = [
     { label: 'Mes billets achetés', pageId: 1, href: path('app_client_remboursement_billet') },
     { label: 'Mon profil', pageId: 2, href: path('app_client_profile') },
-    { label: 'Mes demandes de remboursements', pageId: 3, href: path('app_client_remboursement') }
+    { label: 'Mes demandes de remboursements', pageId: 3, href: path('app_client_remboursement') },
+    { label: 'Mes hôtels loués', pageId: 4, href: path('app_hotel_loue') }
 ] %}
 
     {% for item in menu %}
-        <div class="px-4 py-2.5 bg-slate-800 text-white rounded-lg shadow-md hover:bg-bleuGlace transition duration-200
+        <div class="px-4 sticky py-2.5 bg-slate-800 text-white rounded-lg shadow-md hover:bg-bleuGlace transition duration-200
             {{ page is defined and page == item.pageId ? 'border-l-4 border-bleuGlace translate-x-4' : '' }}">
             <a href="{{item.href }}" class="block font-semibold tracking-wide">{{ item.label }}</a>
         </div>

@@ -13,25 +13,41 @@
                 <div class="rounded-lg overflow-hidden relative w-[45%] h-[300px] shadow-lg transition transform hover:scale-105 bg-slate-900">
                     <div class="h-[55%] overflow-hidden">
                         <img 
-                            src="{{ asset(h.imageHotel) }}" 
-                            alt="{{ h.libelleHotel }}" 
+                            src="{{ asset(h.hotel.imageHotel) }}" 
+                            alt="{{ h.hotel.libelleHotel }}" 
                             class="w-full h-full object-cover"
                         >
                     </div>
 
                     <span class="absolute top-3 left-3 z-10 px-3 py-1 bg-white rounded text-bleuLune font-bold shadow-md">
-                        {{ h.libelleHotel }}
+                        {{ h.hotel.libelleHotel }}
                     </span>
 
                     <div class="p-4 flex flex-col justify-between h-[45%]">
                         <p class="text-white italic line-clamp-3 mb-3 text-sm w-[90%] leading-snug">
-                            {{h.descriptionHotel}}
+                            {{h.hotel.descriptionHotel}}
                         </p>
+                        <div class="flex items-center gap-1 mb-2">
+                            {% set note = h.note ?? 0 %}
+                            {% for i in 1..5 %}
+                                {% if note != 0%}
+                                    {% if i <= note %}
+                                        <svg class="w-5 h-5 text-yellow-400 fill-current" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.122 3.445a1 1 0 00.95.69h3.637c.969 0 1.371 1.24.588 1.81l-2.94 2.138a1 1 0 00-.364 1.118l1.122 3.445c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.94 2.138c-.785.57-1.84-.197-1.54-1.118l1.122-3.445a1 1 0 00-.364-1.118L3.338 8.872c-.783-.57-.38-1.81.588-1.81h3.637a1 1 0 00.95-.69l1.122-3.445z"/>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-5 h-5 text-gray-400 fill-current" viewBox="0 0 20 20">
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.122 3.445a1 1 0 00.95.69h3.637c.969 0 1.371 1.24.588 1.81l-2.94 2.138a1 1 0 00-.364 1.118l1.122 3.445c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.94 2.138c-.785.57-1.84-.197-1.54-1.118l1.122-3.445a1 1 0 00-.364-1.118L3.338 8.872c-.783-.57-.38-1.81.588-1.81h3.637a1 1 0 00.95-.69l1.122-3.445z"/>
+                                        </svg>
+                                    {% endif %}
+                               {% endif %}
+                            {% endfor %}
+                        </div>
                         <div class="flex items-center text-xs">
                             <span class="text-white font-bold text-lg">
-                                Biome : <i class="text-bleuGlace">{{ h.biome.libelleBiome }}</i>
+                                Biome : <i class="text-bleuGlace">{{ h.hotel.biome.libelleBiome }}</i>
                             </span>
-                            <a href="/hotel/{{h.id}}" class="dark:text-black rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
+                            <a href="/hotel/{{h.hotel.id}}" class="dark:text-black rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
                                 En savoir plus
                             </a>
                         </div>

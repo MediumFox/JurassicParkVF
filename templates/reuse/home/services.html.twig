@@ -13,25 +13,33 @@
                 <div class="rounded-lg overflow-hidden relative w-[45%] h-[300px] shadow-lg transition transform hover:scale-105">
                     <div class="h-[55%] overflow-hidden">
                         <img 
-                            src="{{ asset(r.imageRestaurant) }}" 
-                            alt="{{ r.libelleRestaurant }}" 
+                            src="{{ asset(r.restaurant.imageRestaurant) }}" 
+                            alt="{{ r.restaurant.libelleRestaurant }}" 
                             class="w-full h-full object-cover"
                         >
                     </div>
 
                     <span class="absolute top-3 left-3 z-10 px-3 py-1 bg-white rounded text-bleuLune font-bold shadow-md">
-                        {{ r.libelleRestaurant }}
+                        {{ r.restaurant.libelleRestaurant }}
                     </span>
 
                     <div class="p-4 flex flex-col justify-between h-[45%] bg-slate-900">
-                        <p class="text-white italic line-clamp-3 mb-3 text-sm w-[90%] leading-snug">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, inventore quas quia officia adipisci numquam hic cupiditate voluptatibus cumque maxime libero quos facere, facilis accusantium voluptas esse dolorem nostrum temporibus?
-                        </p>
+                        <div class="text-white text-sm mb-3 leading-snug max-h-[85%] overflow-y-auto pr-2">
+                            {% for h in r.horaires %}
+                                <p>
+                                    {{ h.libelleJour }} :
+                                    {{ h.ouverture|date('H:i') }} - {{ h.fermeture|date('H:i') }}
+                                </p>
+                            {% else %}
+                                <p class="italic text-gray-400">Aucun horaire défini</p>
+                            {% endfor %}
+                        </div>
+
                         <div class="flex items-center text-xs">
                             <span class="text-white font-bold text-lg">
-                                Biome : <i class="text-bleuGlace">{{ r.biome.libelleBiome }}</i>
+                                Biome : <i class="text-bleuGlace">{{ r.restaurant.biome.libelleBiome }}</i>
                             </span>
-                            <a href="/restaurant/{{r.id}}" class="dark:text-black rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
+                            <a href="/restaurant/{{ r.restaurant.id }}" class="dark:text-black rounded-full font-bold bg-white w-[5vw] transition h-[5vw] flex justify-center items-center absolute -bottom-5 right-0 hover:scale-105 cursor-pointer hover:underline">
                                 En savoir plus
                             </a>
                         </div>
@@ -40,6 +48,7 @@
             {% else %}
                 <p class="text-center text-bleuGlace italic">Aucun restaurant disponible pour le moment.</p>
             {% endfor %}
+
         </div>
     </div>
 </div>

@@ -1,0 +1,8 @@
+[2025-03-30T21:46:04.961950+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-03-30T21:47:39.799019+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-03-30T21:49:38.061909+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-03-31T08:41:54.905695+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-03-31T08:43:13.784589+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-03-31T08:45:59.380433+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-04-01T16:28:21.204677+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []
+[2025-04-02T20:50:19.826510+00:00] mailer.DEBUG: Email transport "Symfony\Component\Mailer\Transport\Smtp\SmtpTransport" starting [] []

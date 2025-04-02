@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ReserverRestaurant;
 use App\Repository\ChambreRepository;
+use App\Repository\LouerHotelRepository;
 use App\Utils\TraitEmailFormat;
 use DateTime;
 use App\Entity\Date;
@@ -17,6 +18,7 @@ use App\Repository\RestaurantRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\FormatBilletRepository;
 use App\Repository\FormatChambreRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
@@ -69,6 +71,57 @@ final class ClientController extends AbstractController
         ]);
     }
 
+    #[Route('/hotel-loue', name: 'app_hotel_loue', methods: ['GET', 'POST'])]
+    public function hotelLoue(LouerHotelRepository $louerHotelRepository, ChambreRepository $chambreRepository, HotelRepository $hotelRepository): Response
+    {
+        $client = $this->getUser(); 
+
+        $data = $louerHotelRepository->findBy(['user' => $client]);
+        $array = [];
+        
+        foreach ($data as $value) {
+            $chambre = $chambreRepository->find($value->getChambre());
+            $hotel = $hotelRepository->find($chambre->getHotel());
+            $date = $value->getDate();
+            if (!in_array($hotel, $array, true)) {
+                $array[] = [
+                    'hotel' => $hotel,
+                    'date' => $date->getId(),
+                    'note'=> $value->getNote(),
+                    'dateDeb'=> $value->getDebutLocation(),
+                ];
+            }
+        }
+        
+        if (!$client) {
+            return $this->redirectToRoute('app_user_accueil');
+        }
+
+        return $this->render('client/louer-hotel.html.twig', [
+            'data'=> $array,
+            'client' => $client,
+            'hero'=> [
+                'title'=> "Vos hôtels loués",
+                'description' => "Retrouvez ci-dessous la liste des hotels que vous avez loué",
+                'enabled' => true,
+            ],
+            'page'=>'4',
+        ]);
+    }
+
+    
+    #[Route('/change-note', name: 'app_change_note', methods: ['GET'])]
+    public function changeNote(LouerHotelRepository $louerHotelRepository, Request $request): JsonResponse
+    {
+        $value = $request->query->get('value');
+        $date = (int)$request->query->get('date');
+
+
+        $result = $louerHotelRepository->updateNote( $date, $value);
+
+        return new JsonResponse(['success' => true]);
+    }
+    
     #[Route('/reserver-aventure/billet', name: 'app_client_payer', methods: ['POST', 'GET'])]
     public function reserverBillet(Request $request, FormatBilletRepository $formatBilletRepository): Response
     {
@@ -292,7 +345,7 @@ final class ClientController extends AbstractController
             $louerHotel->setDebutLocation($debutBillet);
             $louerHotel->setFinLocation($finBillet);
             $louerHotel->setChambre($uneChambre);
-
+            $louerHotel->setNote(null);
             $entityManager->persist($louerHotel);
         }
 

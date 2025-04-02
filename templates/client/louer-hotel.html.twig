@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les hôtels loués{% endblock %}
+
+{% block body %}
+    {% include 'reuse/hero.html.twig' %}
+    <div class="p-10 w-full h-fit min-h-[55vh] flex justify-center relative dark:bg-gray-900">
+        {% include 'client/dashboard-client.html.twig' %}
+        <div class="w-full ml-[30%] max-w-5xl bg-white rounded-xl shadow-lg shadow-slate-900 p-8">
+            <h2 class="text-xl font-semibold text-bleuLune dark:text-white mb-4">Vos hôtels réservés</h2>
+
+            {% if data is not empty %}
+                <ul class="space-y-6">
+                    {% for item in data %}
+                        <li class="p-6 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-md">
+                            <div class="flex flex-col gap-2">
+                                <h3 class="text-lg font-bold text-slate-900 italic dark:text-white">
+                                    {{ item.hotel.libelleHotel }}
+                                </h3>
+
+                                {% if item.hotel.biome.libelleBiome is defined %}
+                                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                                        {{ item.hotel.biome.libelleBiome }}
+                                    </p>
+                                {% endif %}
+
+                                {% if item.hotel.descriptionHotel is defined %}
+                                    <p class="text-sm  dark:text-gray-300 text-bleuGlace">
+                                        {{ item.hotel.descriptionHotel }}
+                                    </p>
+                                {% endif %}
+
+                                {% if item.hotel.imageHotel is defined %}
+                                    <img src="{{ asset(item.hotel.imageHotel) }}" alt="Image de {{ item.hotel.libelleHotel }}" class="w-full max-h-64 object-cover rounded-lg mt-2">
+                                {% endif %}
+
+                                {% if item.dateDeb < date()  %}
+                                    <div class="mt-4">
+                                        <label class="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-200">Votre note :</label>
+                                        <div class="flex gap-1 items-center" data-hotel-id="{{ item.hotel.id }}" data-hotel-date="{{ item.date }}">
+                                            {% for i in 1..5 %}
+                                                {% set starClass = i <= item.note ? 'text-yellow-400' : 'text-gray-400' %}
+                                                <svg class="w-6 h-6 cursor-pointer star {{ starClass }} hover:text-yellow-400" data-value="{{ i }}" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.122 3.445a1 1 0 00.95.69h3.637c.969 0 1.371 1.24.588 1.81l-2.94 2.138a1 1 0 00-.364 1.118l1.122 3.445c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.94 2.138c-.785.57-1.84-.197-1.54-1.118l1.122-3.445a1 1 0 00-.364-1.118L3.338 8.872c-.783-.57-.38-1.81.588-1.81h3.637a1 1 0 00.95-.69l1.122-3.445z"/>
+                                                </svg>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <span>Votre séjour n'est pas encore passé !</span>
+                                {% endif %}
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-500 dark:text-gray-400">Vous n’avez encore réservé aucun hôtel.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.star').forEach(star => {
+        star.addEventListener('click', function () {
+            const value = parseInt(this.dataset.value);
+            const container = this.closest('[data-hotel-id]');
+            const stars = container.querySelectorAll('.star');
+            const hotelId = container.dataset.hotelId;
+            const date = container.dataset.hotelDate;
+            stars.forEach((s, index) => {
+                s.classList.toggle('text-yellow-400', index < value);
+                s.classList.toggle('text-gray-400', index >= value);
+            });
+
+            const url = "{{ path('app_change_note') }}?hotelId=" + encodeURIComponent(hotelId) + "&date=" + encodeURIComponent(date) + "&value=" +encodeURIComponent(value);
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        console.error("Erreur côté serveur :", data.error);
+                        container.innerHTML = "<p class='text-red-500 text-sm'>Erreur : " + data.error + "</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur JS/fetch :", error);
+                    container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
+                });
+        });
+    });
+</script>
+{% endblock %}

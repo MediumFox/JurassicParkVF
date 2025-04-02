@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\OuvertureRestaurant;
 use App\Entity\Restaurant;
 use App\Form\RestaurantType;
 use App\Repository\HotelRepository;
+use App\Repository\LouerHotelRepository;
+use App\Repository\OuvertureRestaurantRepository;
 use App\Repository\UserRepository;
 use App\Utils\TraitEmailFormat;
 
@@ -37,13 +40,32 @@ final class UserController extends AbstractController
     }
 
     #[Route('/', name: 'app_user_accueil', methods: ['POST'])]
-    public function home(Request $request, EntityManagerInterface $entityManager): Response
+    public function home(LouerHotelRepository $louerHotelRepository, OuvertureRestaurantRepository $ouvertureRestaurantRepository): Response
     {
         $randomHotels = $this->getRandomHotels();
         $randomRestaurants = $this->getRandomRestaurants();
+        $dataH = [];
+        $dataR = [];
+        foreach ($randomHotels as $key => $value) {
+            $note = $louerHotelRepository->noteHotel($value->getId());
+            $dataH[] = [
+                'hotel'=>$value,
+                'note'=>$note,
+            ] ;
+        }
+
+        foreach ($randomRestaurants as $key => $value) {
+            $horaires = $ouvertureRestaurantRepository->horaireRestaurant($value->getId());
+            $dataR[] = [
+                'restaurant' => $value,
+                'horaires' => $horaires,
+            ];
+            
+        }
+
         return $this->render('user/home.html.twig', [
-            'randomHotels'=> $randomHotels,
-            'randomRestaurants' => $randomRestaurants
+            'randomHotels'=> $dataH,
+            'randomRestaurants' => $dataR
         ]);
     }
 

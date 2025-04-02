@@ -16,6 +16,21 @@ class OuvertureRestaurantRepository extends ServiceEntityRepository
         parent::__construct($registry, OuvertureRestaurant::class);
     }
 
+    public function horaireRestaurant($restaurant): array
+    {
+        return $this->createQueryBuilder('o')
+            ->select('j.libelleJour, h.ouverture, h.fermeture')
+            ->join('o.jour', 'j')
+            ->join('o.horaire', 'h')
+            ->where('o.restaurant = :restaurant')
+            ->setParameter('restaurant', $restaurant)
+            ->orderBy('j.libelleJour', 'ASC')
+            ->addOrderBy('h.ouverture', 'ASC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+    
+
     //    /**
     //     * @return OuvertureRestaurant[] Returns an array of OuvertureRestaurant objects
     //     */

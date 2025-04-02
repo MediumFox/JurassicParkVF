@@ -31,6 +31,10 @@ class LouerHotel
     #[ORM\JoinColumn(nullable: false)]
     private ?Date $date = null;
 
+    #[ORM\Column(type: 'integer')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?int $note = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $debutLocation = null;
 
@@ -108,6 +112,18 @@ class LouerHotel
     public function setFinLocation(\DateTimeInterface $finLocation): static
     {
         $this->finLocation = $finLocation;
+
+        return $this;
+    }
+
+    public function getNote(): ?int
+    {
+        return $this->note;
+    }
+
+    public function setNote($note): static
+    {
+        $this->note = $note;
 
         return $this;
     }

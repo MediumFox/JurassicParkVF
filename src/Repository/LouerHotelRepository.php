@@ -16,21 +16,33 @@ class LouerHotelRepository extends ServiceEntityRepository
         parent::__construct($registry, LouerHotel::class);
     }
 
-    //    /**
-    //     * @return LouerHotel[] Returns an array of LouerHotel objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function updateNote($date, $value): int
+    {
+        return $this->getEntityManager()->createQueryBuilder()
+            ->update(LouerHotel::class, 'l')
+            ->set('l.note', ':value')
+            ->where('l.date = :date')
+            ->setParameter('value', $value)
+            ->setParameter('date', $date ) 
+            ->getQuery()
+            ->execute();
+    }
 
+    
+    public function noteHotel($hotelId): ?int
+    {
+        $result = $this->createQueryBuilder('l')
+            ->select('AVG(l.note) as moyenne')
+            ->join('l.chambre', 'c')
+            ->join('c.hotel', 'h')
+            ->where('h.id = :hotelId')
+            ->andWhere('l.note IS NOT NULL')
+            ->setParameter('hotelId', $hotelId)
+            ->getQuery()
+            ->getSingleScalarResult();
+        return $result !== null ? (int) round($result) : null;
+    }
+    
     //    public function findOneBySomeField($value): ?LouerHotel
     //    {
     //        return $this->createQueryBuilder('l')
