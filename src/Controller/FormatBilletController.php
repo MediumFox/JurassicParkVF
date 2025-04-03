@@ -62,7 +62,7 @@ final class FormatBilletController extends AbstractController
         ]);
     }
     #[Route('/edit/{id}', name: 'app_format_billet_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, FormatBillet $formatBillet, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, FormatBillet $formatBillet, EntityManagerInterface $entityManager): JsonResponse
     {
         $form = $this->createForm(FormatBilletType::class, $formatBillet);
         $form->handleRequest($request);

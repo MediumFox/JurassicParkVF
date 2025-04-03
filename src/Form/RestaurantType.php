@@ -43,6 +43,9 @@ class RestaurantType extends AbstractType
                 'label_attr' => [
                     'class' => 'text-bleuLune font-semibold mb-1 block'
                 ],
+                'label' => 'Image',
+                'required' => true,
+                'mapped' => false, 
             ])
             ->add('nbTable', IntegerType::class, [
                 'attr'=>[

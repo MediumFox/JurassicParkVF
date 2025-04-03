@@ -13,11 +13,20 @@
                 <span class="p-1.5 bg-slate-900 text-white font-bold rounded text-sm cursor-pointer">Créer un dinosaure</span>
             </div> 
             <h1 class="font-bold text-2xl mb-3.5 underline">Les dinosaures</h1>
+            <div class="flex gap-4 mt-4 mb-4">
+                <button onclick="telechargerJson()" class="bg-slate-900 text-white px-1 py-0 rounded cursor-pointer">
+                    Télécharger JSON
+                </button>
+                <button onclick="telechargerXml()" class="bg-slate-900 text-white px-3 py-2 rounded cursor-pointer">
+                    Télécharger XML
+                </button>
+            </div>
             <div class="flex justify-between items-center w-full  mb-10">
                 <div class="flex flex-col ">
                     <label for='filterName' class="underline mb-1 text-bleuLune font-bold">Trier par libellé :</label>
                     <input type='text' oninput="filterName()" class="border border-bleuGlace p-0.5 w-[20vw] rounded focus:outline-none focus:ring-2 focus:ring-bleuClair" id='filterName'/>
                 </div>
+
                 <div class="flex items-end justify-end gap-5">
                     <div class="flex flex-col justify-end ">
                         <label for='selectRegime' class="underline mb-1 text-bleuLune font-bold">Trier par Régime :</label>
@@ -59,6 +68,7 @@
 </div>
 {% include 'reuse/display/addDisplay.html.twig' %}
 {% include 'reuse/display/updateDisplay.html.twig' %}
+{% include 'reuse/display/cloneDisplay.html.twig' %}
 
 <script>
     function filterName() {
@@ -81,6 +91,36 @@
             console.error(error);
             container.innerHTML = "<p class='text-red-500 text-sm'>Erreur lors du chargement.</p>";
         });
+    }
+
+    function telechargerJson() {
+    fetch("{{ path('app_dinosaure_json') }}")
+        .then(response => response.blob())
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "dinosaures.json";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            window.URL.revokeObjectURL(url);
+        });
+    }
+
+    function telechargerXml() {
+        fetch("{{ path('app_dinosaure_xml') }}")
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "dinosaures.xml";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            });
     }
 </script>
 {% endblock %}

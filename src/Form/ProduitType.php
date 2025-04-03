@@ -37,7 +37,11 @@ class ProduitType extends AbstractType
                     'class' => 'text-bleuLune font-semibold mb-1 block'
                 ],
             ])
-            ->add('imageProduit', FileType::class)
+            ->add('imageProduit', FileType::class, [
+                'label' => 'Image',
+                'required' => true,
+                'mapped' => false, 
+            ])
             ->add('descriptionProduit', TextareaType::class, [
                 'attr'=>[
                     'placeholder'=>'...',

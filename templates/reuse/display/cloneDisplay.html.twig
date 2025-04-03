@@ -1,0 +1,58 @@
+<div class="fixed inset-0 flex justify-center items-center bg-black/30 hidden z-50" id="duplicateDisplay"  onClick="fermerCloneData()">
+    <div class="w-[40%] bg-gray-100 p-5 rounded-lg shadow-lg z-60" onClick="event.stopPropagation()">
+        <h2 class="text-xl font-bold mb-4">Dupliquer un dinosaure</h2>
+        <div id="duplicateContainer">
+            <p class="text-gray-400 text-sm">Chargement du formulaire...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function cloneData(id) {
+    const modal = document.getElementById('duplicateDisplay');
+    const formContainer = document.getElementById('duplicateContainer');
+
+    modal.style.display = "flex";
+    const url = "{{ path('app_dinosaure_duplicate_form') }}" + "?id=" + encodeURIComponent(id);
+
+    fetch(url)
+        .then(response => response.text())
+        .then(html => {
+            formContainer.innerHTML = html;
+            const form = formContainer.querySelector("form");
+            if (form) {
+                form.addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(form);
+
+                    fetch(form.action, {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert("Erreur : " + data.errors);
+                        }
+                    })
+                    .catch(() => {
+                        alert("Erreur réseau.");
+                    });
+                });
+            }
+        })
+        .catch(error => {
+            formContainer.innerHTML = "<span class='text-red-500'>Erreur lors du chargement.</span>";
+        });
+    }
+
+function fermerCloneData() {
+    document.getElementById('duplicateDisplay').style.display = "none";
+}
+function fermerCloneData() {
+    document.getElementById('duplicateDisplay').style.display = "none";
+}
+</script>

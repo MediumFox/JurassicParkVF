@@ -1,12 +1,12 @@
 
-{% set route = 'app_' ~ entity ~ '_' ~ (type == 'Mettre à jour' ? 'edit' :  type == 'Dupliquer' ? 'duplicate' : 'new') %}
+{% set route = 'app_' ~ entity ~ '_' ~ 'duplicate' %}
 
 <form id="form" action="{{ path(route, id is defined ? {'id': id} : {}) }}" method="post" data-turbo="false">
     <div id="form-errors" class="text-red-500 text-sm mb-2"></div>
 
     {{ form_widget(form) }}
 
-    <button type="submit" id="btnSubmit" class="bg-bleuLune text-white px-4 py-2 rounded w-full mt-4 cursor-pointer">
+    <button type="submit" id="btnSubmitDuplicate" class="bg-bleuLune text-white px-4 py-2 rounded w-full mt-4 cursor-pointer">
         {{ type }}
     </button>
 </form>
@@ -14,7 +14,7 @@
 <script>
 document.getElementById("form").addEventListener("submit", function(e) {
     e.preventDefault();
-    let btnSubmit = document.getElementById('btnSubmit');
+    let btnSubmit = document.getElementById('btnSubmitDuplicate');
     btnSubmit.disabled = true;
     const form = e.target;
     const data = new FormData(form);
@@ -39,4 +39,5 @@ document.getElementById("form").addEventListener("submit", function(e) {
         errors.innerHTML = "Erreur technique.";
     });
 });
+
 </script>
